@@ -30,34 +30,37 @@ def rocks(img, palette, seed_obj):
 
 
 def draw_rocks_left(draw, x_cord, y_cord):
-    for i in range(2):
-        x_l_e = x_cord
-        y_l_e = y_cord
+    (cx, cy) = (x_cord, y_cord)
+    wb = random.randint(5, 10)
+    wt = random.randint(5, 10)
+    h = random.randint(3, 5)
+    (ax, ay) = (cx - wt, cy)
+    (bx, by) = (cx - wb, cy + h)
+    draw.polygon([(ax, ay), (bx, by), (cx, cy)], fill=MIDDLE, outline=DARK)
 
-        while x_l_e >= 0:
-            w = random.randint(5, 10)
-            h = random.randint(-5, 5)
-            x_l_s = x_l_e - w 
-            y_l_s = y_l_e + h
-            sep = random.randint(3,5)
-
-            xy = ((x_l_s, y_l_s), (x_l_e, y_l_e))
-            draw.line(xy, fill=DARK)
-            (x_l_e, y_l_e) = (x_l_s, y_l_s)
-
+    (dx, dy) = (cx, cy)
+    while max(cx, dx) >= 0:
+        wb = random.randint(5, 10)
+        wt = random.randint(5, 10)
+        hb = random.randint(-7, 7)
+        ht = random.randint(-7, 7)
+        (cx, cy) = (bx, by)
+        (dx, dy) = (ax, ay)
+        (bx, by) = (cx - wt, cy + ht)
+        (ax, ay) = (dx - wb, dy + hb)
+        draw.polygon([(ax, ay), (bx, by), (cx, cy), (dx, dy)], fill=MIDDLE, outline=DARK)
 
 
 def draw_rocks_right(draw, x_cord, y_cord):
-    for i in range(2):
-        x_l_s = x_cord
-        y_l_s = y_cord
+    xls = x_cord
+    yls = y_cord
 
-        while x_l_s <= 255:
-            w = random.randint(5, 10)
-            h = random.randint(-5, 5)
-            x_l_e = x_l_s + w 
-            y_l_e = y_l_s + h
+    while xls <= 255:
+        w = random.randint(5, 10)
+        h = random.randint(-5, 5)
+        xle = xls + w 
+        yle = yls + h
 
-            xy = ((x_l_s, y_l_s), (x_l_e, y_l_e))
-            draw.line(xy, fill=DARK)
-            (x_l_s, y_l_s) = (x_l_e, y_l_e)
+        xy = ((xls, yls), (xle, yle), ( (xle + xls)/2, yle - 5))
+        draw.polygon(xy, fill=MIDDLE, outline=DARK)
+        (xls, yls) = (xle, yle)
