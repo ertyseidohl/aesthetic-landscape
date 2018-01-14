@@ -34,7 +34,7 @@ def draw_rocks_left(draw, x_cord, y_cord):
     w = h*1.5
     x = x_cord
     y = y_cord
-    while x + width >= 0:
+    while x + w >= 0:
         xy = ((x, y), (x + w, y + h))
         draw.line(xy, fill=DARK)
         x = x - w
