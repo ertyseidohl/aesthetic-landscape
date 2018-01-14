@@ -12,7 +12,7 @@ def mountains(img, palette, seed_obj):
     for mountain_range in mountain_ranges:
         for peaks in mountain_range:
             for i in range(len(peaks) - 1):
-                draw.line([peaks[i], peaks[i+1]], fill=0)
+                draw.line([peaks[i], peaks[i+1]], fill=10)
     del draw
 
     return img, palette
