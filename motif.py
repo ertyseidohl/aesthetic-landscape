@@ -1,5 +1,6 @@
 from PIL import Image, ImagePalette
 import stages
+import time
 from palette import PaletteWrapper
 import random
 
@@ -37,3 +38,4 @@ img.putpalette(ImagePalette.ImagePalette('RGB', palette.serialize()))
 img = img.resize((1024, 1024), resample=Image.NEAREST)
 
 img.show()
+img.save('motif_{}.png'.format(int(time.time())), 'PNG')

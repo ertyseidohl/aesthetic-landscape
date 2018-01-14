@@ -2,6 +2,18 @@ import random
 from PIL import ImageDraw
 
 
+class Mountain:
+
+    def __init__(self):
+        self.outline = []
+
+    def draw(self, draw,fill):
+        draw.polygon(self.outline, fill=fill)
+
+    def shift_y(self, amount):
+        self.outline = [(xy[0], xy[1] + amount) for xy in self.outline]
+
+
 def mountains(img, palette, seed_obj):
     random.seed(seed_obj['base_seed'])
 
@@ -9,10 +21,10 @@ def mountains(img, palette, seed_obj):
     mountain_ranges = [_build_range(random.randint(3, 5), 256, 100) for _ in range(mountain_range_count)]
     draw = ImageDraw.Draw(img)
 
-    for mountain_range in mountain_ranges:
-        for peaks in mountain_range:
-            for i in range(len(peaks) - 1):
-                draw.line([peaks[i], peaks[i+1]], fill=10)
+    for i, mountain_range in enumerate(mountain_ranges):
+        for mountain in mountain_range:
+            mountain.shift_y(i * 100)
+            mountain.draw(draw, i)
     del draw
 
     return img, palette
@@ -23,21 +35,36 @@ def _build_range(peak_num, width, height):
     peak_xy_list = [(random.randint(0, width), random.randint(0, height)) for _ in range(peak_num)]
     peak_xy_list = sorted(peak_xy_list, key=lambda x: x[0])
 
-    walks = [_walk(peak, height) for peak in peak_xy_list]
-    return walks
+    mountain_range = [_walk(peak, height) for peak in peak_xy_list]
+    return mountain_range
 
 
 def _walk(peak_xy, height):
-    walk = [peak_xy]
 
-    walk_xy = peak_xy
-    while walk_xy[1] < height:
+    mountain = Mountain()
+    mountain.peak = peak_xy
+    mountain.outline = [peak_xy]
+    mountain.patches = []
+
+    walk_xy = mountain.peak
+    while walk_xy[1] <= height:
         walk_xy = (walk_xy[0] - random.randint(1, 30), walk_xy[1] + random.randint(1, 30))
-        walk.append(walk_xy)
+        mountain.outline.append(walk_xy)
 
-    walk_xy = peak_xy
-    while walk_xy[1] < height:
+        if random.randint(0, 10) > 5:
+            walk_index = len(mountain.outline) - 1
+
+            x_shift = walk_index * 2 + random.randint(0, 2)
+
+            start = mountain.outline[walk_index][0] + x_shift, mountain.outline[walk_index][1]
+            end = mountain.outline[walk_index - 1][0] + x_shift, mountain.outline[walk_index -1][1]
+            mountain.patches.append((start, end))
+
+    walk_xy = mountain.peak
+    while walk_xy[1] <= height:
         walk_xy = (walk_xy[0] + random.randint(1, 30), walk_xy[1] + random.randint(1, 30))
-        walk.append(walk_xy)
+        mountain.outline.append(walk_xy)
 
-    return sorted(walk, key=lambda x: x[0])
+    mountain.outline = sorted(mountain.outline, key=lambda x: x[0])
+
+    return mountain
