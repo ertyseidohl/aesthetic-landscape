@@ -1,2 +1,2 @@
-def background(pil_obj, seed_obj):
-	return pil_obj
+def background(img, seed_obj):
+	return img

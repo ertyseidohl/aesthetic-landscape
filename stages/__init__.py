@@ -1,7 +1,7 @@
 from .background import background
 
-def noop(pil, seed):
-	return pil
+def noop(img, seed):
+	return img
 
 mountains = noop
 rocks = noop
