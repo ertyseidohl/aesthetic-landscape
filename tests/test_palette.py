@@ -7,8 +7,6 @@ def test_set_color():
 
 	palette.set_color(128, (3, 4, 5))
 
-	print(palette.r)
-
 	assert palette.get_color(128) == (3, 4, 5)
 
 	# testing internals -- scaffolding test
