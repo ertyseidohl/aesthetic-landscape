@@ -6,7 +6,9 @@ img = Image.new('P', (256, 256), color=255)
 
 palette = PaletteWrapper()
 
-seed_object = {}
+seed_object = {
+    'base_seed': 512,
+}
 
 funcs = []
 
