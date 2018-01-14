@@ -11,11 +11,23 @@ def background(img, palette, seed_obj):
 	random.seed(0)
 
 	# num_colors = random.randInt(0, MAX_COLORS)
-	num_colors = 4
+	num_colors = 8
 	# dither_pattern = DITHERS[random.randInt(0, len(DITHERS))]
 	dither_pattern = DITHERS[0]
 
-	bg = [COLOR_OFFSET + (i % num_colors) for i in range(256 * 256)]
+	(width, height) = img.size
+
+	bg = []
+
+	if dither_pattern == 'none':
+		total_pixels = width * height
+		band_pixels = int(total_pixels / num_colors)
+		for i in range(num_colors):
+			bg += [i for x in range(band_pixels)]
+		count = band_pixels * num_colors
+		while count < total_pixels:
+			bg += [num_colors - 1]
+			count += 1
 
 	img.putdata(bg)
 
