@@ -1,2 +1,2 @@
-def background(img, seed_obj):
-	return img
+def background(img, palette, seed_obj):
+	return (img, palette)

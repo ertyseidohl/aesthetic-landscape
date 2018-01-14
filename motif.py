@@ -1,9 +1,10 @@
-from PIL import Image
+from PIL import Image, ImagePalette
 import stages
+from palette import PaletteWrapper
 
-img = Image.new('RGB', (256, 256), color=(255, 255, 255))
+img = Image.new('P', (256, 256), color=255)
 
-img = img.resize((1024, 1024), resample=Image.NEAREST)
+palette = PaletteWrapper()
 
 seed_object = {}
 
@@ -19,6 +20,12 @@ register_function(stages.water)
 register_function(stages.moon)
 
 for func in funcs:
-    img = func(img, seed_object)
+    img, palette = func(img, palette, seed_object)
+
+print(len(palette.serialize()))
+
+img.putpalette = ImagePalette.ImagePalette('RGB', palette.serialize())
+
+img = img.resize((1024, 1024), resample=Image.NEAREST)
 
 img.show()
