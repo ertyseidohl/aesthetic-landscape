@@ -19,6 +19,7 @@ def background(img, palette, seed_obj):
 	# 0xff, 0xda, 0xf1
 
 	for i in range(colors):
+		print(COLOR_OFFSET + i)
 		palette.set_color(COLOR_OFFSET + i, (0xe3, 0xba, 0xff))
 
 	img.putdata(bg)
