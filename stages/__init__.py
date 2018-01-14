@@ -1,9 +1,9 @@
 from .background import background
+from .mountains import mountains
 
 def noop(img, palette, seed):
 	return (img, palette)
 
-mountains = noop
 rocks = noop
 water = noop
 moon = noop
