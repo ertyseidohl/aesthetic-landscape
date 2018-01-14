@@ -1,10 +1,9 @@
 import random
 from PIL import ImageDraw
 
-random.seed(128)
-
 
 def mountains(img, palette, seed_obj):
+    random.seed(seed_obj['base_seed'])
 
     mountain_range_count = random.randint(2, 4)
     mountain_ranges = [_build_range(random.randint(3, 5), 256, 100) for _ in range(mountain_range_count)]
