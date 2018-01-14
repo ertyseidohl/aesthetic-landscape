@@ -22,8 +22,6 @@ register_function(stages.moon)
 for func in funcs:
     img, palette = func(img, palette, seed_object)
 
-print(len(palette.serialize()))
-
 img.putpalette = ImagePalette.ImagePalette('RGB', palette.serialize())
 
 img = img.resize((1024, 1024), resample=Image.NEAREST)
