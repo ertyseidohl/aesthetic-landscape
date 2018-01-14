@@ -36,7 +36,7 @@ def draw_rocks_left(draw, x_cord, y_cord):
     y = y_cord
     while x + width >= 0:
         xy = ((x, y), (x+width, y+height))
-        draw.line(xy, fill=MIDDLE, outline=DARK)
+        draw.line(xy, fill=DARK)
         x = x - width
 
 
@@ -47,5 +47,5 @@ def draw_rocks_right(draw, x_cord, y_cord):
     y = y_cord
     while x <= 255:
         xy = ((x, y), (x+width, y+height))
-        draw.line(xy, fill=MIDDLE, outline=DARK)
+        draw.line(xy, fill=DARK)
         x = x + width
