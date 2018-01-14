@@ -1,2 +1,20 @@
+import random
+
+MAX_COLORS = 8
+DITHERS = ('none', 'a', 'b', 'c')
+
 def background(img, palette, seed_obj):
+	# random.seed(seed_obj['base_seed'])
+	random.seed(0)
+
+	# colors = random.randInt(0, MAX_COLORS)
+	colors = 4
+	# dither_pattern = DITHERS[random.randInt(0, len(DITHERS))]
+	dither_pattern = DITHERS[0]
+
+	bg = [i % 256 for i in range(256 * 256)]
+
+	img.putdata(bg)
+
 	return (img, palette)
+
