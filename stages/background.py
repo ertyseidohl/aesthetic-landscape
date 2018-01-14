@@ -17,7 +17,8 @@ def background(img, palette, seed_obj):
 
 	bg = []
 
-	(width, height) = img.size
+	width = img.size[0]
+	height = seed_obj['horizon']
 
 	if pattern == 'none':
 		bg = _fill_bands(width, height, num_colors)
@@ -37,8 +38,6 @@ def background(img, palette, seed_obj):
 		band = [ceil(i / BAND_WIDTH) % num_colors for i in range(width)]
 		for y in range(height):
 			bg += [band[(i + y) % len(band)] for i in range(len(band))]
-
-
 
 	img.putdata(bg)
 
