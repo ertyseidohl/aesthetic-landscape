@@ -1,12 +1,15 @@
 from PIL import Image, ImagePalette
 import stages
+import time
 from palette import PaletteWrapper
 
 img = Image.new('P', (256, 256), color=255)
 
 palette = PaletteWrapper()
 
-seed_object = {}
+seed_object = {
+    'base_seed': 512
+}
 
 funcs = []
 
@@ -27,3 +30,4 @@ img.putpalette(ImagePalette.ImagePalette('RGB', palette.serialize()))
 img = img.resize((1024, 1024), resample=Image.NEAREST)
 
 img.show()
+img.save('motif_{}.png'.format(int(time.time())), 'PNG')
