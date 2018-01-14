@@ -5,8 +5,8 @@ def lerp(color_1, color_2, steps):
 	b_step = (color_2[2] - color_1[2]) / steps
 	while step < steps:
 		yield (
-			color_1[0] + (r_step * step),
-			color_1[1] + (g_step * step),
-			color_1[2] + (b_step * step)
+			int(color_1[0] + (r_step * step)),
+			int(color_1[1] + (g_step * step)),
+			int(color_1[2] + (b_step * step))
 		)
 		step += 1
