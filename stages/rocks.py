@@ -30,14 +30,16 @@ def rocks(img, palette, seed_obj):
 
 
 def draw_rocks_left(draw, x_cord, y_cord):
-    height = 10
-    width = height*1.5
+    h = 10
+    w = h*1.5
     x = x_cord
     y = y_cord
     while x + width >= 0:
-        xy = ((x, y), (x+width, y))
+        xy = ((x, y), (x + w, y + h))
         draw.line(xy, fill=DARK)
-        x = x - width
+        x = x - w
+        h = random.randint(-10, 10)
+
 
 
 def draw_rocks_right(draw, x_cord, y_cord):
