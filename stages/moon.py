@@ -6,7 +6,9 @@ import colors
 import reflection
 
 COLOR_LIGHT = colors.WHITE
-COLOR_CRATER = colors.BG_LIGHTEST
+COLOR_SHADOW = colors.BG_LIGHTEST
+
+SQUASH_AMOUNT = 2
 
 def moon(layers, layer_factory, seed_obj):
 	random.seed(seed_obj['base_seed'])
@@ -16,18 +18,17 @@ def moon(layers, layer_factory, seed_obj):
 
 	layer = layer_factory('moon', reflection.REFLECT_HORIZON)
 
-	moon_x = random.triangular(0, width)
-	# moon_y = random.triangular(0, horizon)
+	moon_x = int(random.triangular(0, width))
+	# moon_y = int(random.triangular(0, horizon))
 	moon_y = horizon
-	moon_r = random.triangular(16, 64)
+	moon_r = int(random.triangular(16, 64))
 
 	draw = ImageDraw.Draw(layer.img)
 
 	phase = random.choice((
-		# _draw_new_moon,
-		# _draw_crescent_moon,
-		# _draw_gibbous_moon,
-		_draw_full_moon,
+		_draw_new_moon,
+		_draw_crescent_moon,
+		_draw_gibbous_moon,
 	))
 
 	phase(moon_x, moon_y, moon_r, draw, seed_obj)
@@ -36,20 +37,43 @@ def moon(layers, layer_factory, seed_obj):
 
 	return layer
 
-def _generate_bounding_box(x, y, r):
-	return ((x - r, y - r), (x + r, y + r))
-
 def _draw_new_moon(x, y, r, draw, seed_obj):
-	pass # lol
+	draw.ellipse(((x - r - SQUASH_AMOUNT, y - r), (x + r + SQUASH_AMOUNT, y + r)), COLOR_SHADOW)
 
 def _draw_crescent_moon(x, y,  r, draw, seed_obj):
-	pass
+	draw.ellipse(((x - r - SQUASH_AMOUNT, y - r), (x + r + SQUASH_AMOUNT, y + r)), COLOR_SHADOW)
+
+	draw.pieslice(
+		((x - r, y - r + 1), (x + r, y + r - 1)),
+		270,
+		90,
+		fill=COLOR_LIGHT
+	)
+
+	crescent_width = random.randint(0, r)
+
+	draw.pieslice(
+		((x - r + crescent_width, y - r + 1), (x + r - crescent_width, y + r - 1)),
+		270,
+		90,
+		fill=COLOR_SHADOW
+	)
 
 def _draw_gibbous_moon(x, y, r, draw, seed_obj):
-	pass
-
-def _draw_full_moon(x, y, r, draw, seed_obj):
-	draw.ellipse(_generate_bounding_box(x, y, r), COLOR_LIGHT)
-
-
-	# crater_mask =
+	#shadow
+	draw.ellipse(((x - r - SQUASH_AMOUNT, y - r), (x + r + SQUASH_AMOUNT, y + r)), COLOR_SHADOW)
+	# right
+	draw.chord(
+		((x - r, y - r + 1), (x + r, y + r - 1)),
+		270,
+		90,
+		fill=COLOR_LIGHT
+	)
+	#left
+	gibbous_shift = random.randint(0, r // 2)
+	draw.chord(
+		((x - r + gibbous_shift, y - r + 1), (x + r - gibbous_shift, y + r - 1)),
+		90,
+		270,
+		fill=COLOR_LIGHT
+	)
