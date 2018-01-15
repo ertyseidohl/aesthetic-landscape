@@ -17,6 +17,9 @@ random.seed(base_seed)
 seed_object = {
     'base_seed': base_seed,
     'horizon': int(random.triangular(64, 192))
+    'colors': [
+
+    ]
 }
 
 funcs = []
