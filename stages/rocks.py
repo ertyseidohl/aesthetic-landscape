@@ -30,37 +30,42 @@ def rocks(img, palette, seed_obj):
 
 
 def draw_rocks_left(draw, x_cord, y_cord):
-    (cx, cy) = (x_cord, y_cord)
-    wb = random.randint(5, 10)
-    wt = random.randint(5, 10)
-    h = random.randint(3, 5)
-    (ax, ay) = (cx - wt, cy)
-    (bx, by) = (cx - wb, cy + h)
-    draw.polygon([(ax, ay), (bx, by), (cx, cy)], fill=MIDDLE, outline=DARK)
+    (top_coords, bot_coords) = ([(x_cord,y_cord)], [])
 
-    (dx, dy) = (cx, cy)
-    while max(cx, dx) >= 0:
-        wb = random.randint(5, 10)
-        wt = random.randint(5, 10)
-        hb = random.randint(-7, 7)
-        ht = random.randint(-7, 7)
-        (cx, cy) = (bx, by)
-        (dx, dy) = (ax, ay)
-        (bx, by) = (cx - wt, cy + ht)
-        (ax, ay) = (dx - wb, dy + hb)
-        draw.polygon([(ax, ay), (bx, by), (cx, cy), (dx, dy)], fill=MIDDLE, outline=DARK)
+    (x, y) = (x_cord, y_cord)
+    (x2, y2) = (x, y)
+    i = 0
+    while x >= 0:
+        w = random.randint(5, 10)
+        h = random.randint(-5, 5)
+        (x, y) = (x - w, y + h)
+        (x2, y2) = (x + random.randint(-2, 2), y + random.randint(3,10) + i)
+        bot_coords.append((x, y))
+        top_coords.append((x2, y2))
+        i += 1
+    bot_coords.reverse()
+    coords = top_coords + bot_coords
+
+    draw.polygon(coords, fill=MIDDLE, outline=DARK)
 
 
 def draw_rocks_right(draw, x_cord, y_cord):
-    xls = x_cord
-    yls = y_cord
+    (top_coords, bot_coords) = ([(x_cord,y_cord)], [])
 
-    while xls <= 255:
+    (x, y) = (x_cord, y_cord)
+    (x2, y2) = (x, y)
+    i = 0
+    while x <= 255:
         w = random.randint(5, 10)
         h = random.randint(-5, 5)
-        xle = xls + w 
-        yle = yls + h
+        (x, y) = (x + w, y + h)
+        (x2, y2) = (x + random.randint(-2, 2), y + random.randint(3,10) + i)
+        bot_coords.append((x, y))
+        top_coords.append((x2, y2))
+        i += 1
+    bot_coords.reverse()
+    coords = top_coords + bot_coords
 
-        xy = ((xls, yls), (xle, yle), ( (xle + xls)/2, yle - 5))
-        draw.polygon(xy, fill=MIDDLE, outline=DARK)
-        (xls, yls) = (xle, yle)
+    draw.polygon(coords, fill=MIDDLE, outline=DARK)
+
+
