@@ -4,17 +4,8 @@ import colors
 
 WATER_COLOR = colors.LIGHT_BLUE
 
-def water(img, seed_obj):
-    (width, height) = img.size
-    horizon = seed_obj['horizon']
+def water(layers, layer_factory, seed_obj):
 
-    bg = list(img.getdata())
+    layer = layer_factory('water')
 
-    bg = [WATER_COLOR if bg[i] == 255 else bg[i] for i in range(len(bg))]
-
-    img.putdata(bg)
-
-    return img
-
-
-
+    return layer

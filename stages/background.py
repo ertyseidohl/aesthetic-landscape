@@ -6,7 +6,12 @@ import colors
 PATTERNS = ('none', 'dither', 'diag')
 COLORS = range(colors.DARK_PURPLE, colors.LIGHT_PURPLE)
 
-def background(img, seed_obj):
+
+def background(layers, layer_factory, seed_obj):
+
+    layer = layer_factory('background')
+    img = layer.img
+
     random.seed(seed_obj['base_seed'])
 
     num_colors = len(COLORS)
@@ -38,7 +43,7 @@ def background(img, seed_obj):
 
     img.putdata(bg)
 
-    return img
+    return layer
 
 def swap(bg, width, x1, y1, x2, y2):
     bg[y1 * width + x1], bg[y2 * width + x2] = bg[y2 * width + x2], bg[y1 * width + x1]

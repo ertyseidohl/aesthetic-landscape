@@ -62,9 +62,11 @@ class Mountain:
     def shift_y(self, amount):
         self.outline = [(xy[0], xy[1] + amount) for xy in self.outline]
 
-
-def mountains(img, seed_obj):
+def mountains(layers, layer_factory, seed_obj):
     random.seed(seed_obj['base_seed'])
+
+    layer = layer_factory('mountains')
+    img = layer.img
 
     mountain_range_count = random.randint(2, 4)
     mountain_ranges = [_build_range(random.randint(3, 5), 256, 100) for _ in range(mountain_range_count)]
@@ -78,7 +80,7 @@ def mountains(img, seed_obj):
             mountain.draw(draw, colors.DARK_BLUE + i)
     del draw
 
-    return img
+    return layer
 
 
 def _build_range(peak_num, width, height):

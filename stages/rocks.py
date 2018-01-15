@@ -7,8 +7,11 @@ DARK = colors.COLOR_MAP[1]
 MIDDLE = colors.COLOR_MAP[2]
 LIGHT = colors.COLOR_MAP[3]
 
-def rocks(img, seed_obj):
+def rocks(layers, layer_factory, seed_obj):
     random.seed(seed_obj['base_seed'])
+
+    layer = layer_factory('rocks')
+    img = layer.img
 
     draw = ImageDraw.Draw(img)
     base_height = 10
@@ -22,7 +25,7 @@ def rocks(img, seed_obj):
         else:
             draw_rocks_right(draw, x_cord, y_cord)
 
-    return img
+    return layer
 
 
 def draw_rocks_left(draw, x_cord, y_cord):
