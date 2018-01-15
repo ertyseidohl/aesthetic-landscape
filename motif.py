@@ -7,23 +7,23 @@ import time
 
 from PIL import Image, ImagePalette
 
-from layer import layer_factory
+from layer import layer_factory, IMAGE_SIZE
 from palettewrapper import PaletteWrapper
 import stages
 import reflection
 
 palette = PaletteWrapper()
 
-# base_seed = random.randint(0, sys.maxsize)
-base_seed = 512
+base_seed = random.randint(0, sys.maxsize)
+# base_seed = 512
 
 random.seed(base_seed)
 
 seed_object = {
     'base_seed': base_seed,
-    'horizon': int(random.triangular(64, 192)),
-    'height': 256,
-    'width': 256,
+    'horizon': int(random.triangular(IMAGE_SIZE[0] * 0.25, IMAGE_SIZE[0] * 0.75)),
+    'height': IMAGE_SIZE[0],
+    'width': IMAGE_SIZE[1],
 }
 
 funcs = []
@@ -56,7 +56,7 @@ for layer in layers:
 palette.set_colors(colors.generate_palette(seed_object))
 image.putpalette(ImagePalette.ImagePalette('RGB', palette.serialize()))
 
-image = image.resize((1024, 1024), resample=Image.NEAREST)
+image = image.resize((IMAGE_SIZE[0] * 4, IMAGE_SIZE[1] * 4), resample=Image.NEAREST)
 
 image.show()
 image.save(f'img/motif_{int(time.time())}.png', 'PNG')
