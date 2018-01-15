@@ -4,6 +4,10 @@ class PaletteWrapper:
         self.g = [i for i in range(256)]
         self.b = [i for i in range(256)]
 
+    def set_colors(self, color_table):
+        for i in range(len(color_table)):
+            self.set_color(i, color_table[i])
+
     def set_color(self, eight_bit, rgb):
         assert type(eight_bit) is int and eight_bit >= 0 and eight_bit < 256
         assert type(rgb) is list or type(rgb) is tuple and len(rgb) is 3

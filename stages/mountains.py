@@ -1,13 +1,13 @@
 import math
 from PIL import ImageDraw
 import random
+import colors
 
 from util import lerp
 
-COLOR_OFFSET = 30
-
-LIGHT = (0xBA, 0xF4, 0xFF)
-DARK = (0x33, 0xAF, 0xE0)
+LIGHT = colors.LIGHT_BLUE
+DARK = colors.DARK_BLUE
+WHITE = colors.WHITE
 
 class Mountain:
 
@@ -63,7 +63,7 @@ class Mountain:
         self.outline = [(xy[0], xy[1] + amount) for xy in self.outline]
 
 
-def mountains(img, palette, seed_obj):
+def mountains(img, seed_obj):
     random.seed(seed_obj['base_seed'])
 
     mountain_range_count = random.randint(2, 4)
@@ -75,14 +75,10 @@ def mountains(img, palette, seed_obj):
             if random.choices([False, False, False, False, True]):
                 mountain.add_patch(random.random())
             mountain.shift_y(i * 100)
-            mountain.draw(draw, i + COLOR_OFFSET)
+            mountain.draw(draw, colors.DARK_BLUE + i)
     del draw
 
-    color_gen = lerp(LIGHT, DARK, mountain_range_count)
-    for i in range(mountain_range_count):
-        palette.set_color(i + COLOR_OFFSET, next(color_gen))
-
-    return img, palette
+    return img
 
 
 def _build_range(peak_num, width, height):

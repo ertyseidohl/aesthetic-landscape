@@ -3,7 +3,7 @@ from .mountains import mountains
 from .rocks import rocks
 from .water import water
 
-def noop(img, palette, seed):
-	return (img, palette)
+def noop(img, seed):
+	return img
 
 moon = noop

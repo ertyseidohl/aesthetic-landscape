@@ -1,7 +1,8 @@
 from PIL import Image, ImagePalette
 import stages
 import time
-from palette import PaletteWrapper
+from palettewrapper import PaletteWrapper
+import colors
 import random
 import sys
 
@@ -17,9 +18,6 @@ random.seed(base_seed)
 seed_object = {
     'base_seed': base_seed,
     'horizon': int(random.triangular(64, 192))
-    'colors': [
-
-    ]
 }
 
 funcs = []
@@ -34,9 +32,9 @@ register_function(stages.moon)
 register_function(stages.water)
 
 for func in funcs:
-    img, palette = func(img, palette, seed_object)
+    img = func(img, seed_object)
 
-palette.set_color(255, (0xff, 0x00, 0x00))
+palette.set_colors(colors.COLOR_MAP)
 img.putpalette(ImagePalette.ImagePalette('RGB', palette.serialize()))
 
 img = img.resize((1024, 1024), resample=Image.NEAREST)

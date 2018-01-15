@@ -1,18 +1,14 @@
 import random
 from PIL import Image, ImageDraw
 import os
+import colors
 
+DARK = colors.COLOR_MAP[1]
+MIDDLE = colors.COLOR_MAP[2]
+LIGHT = colors.COLOR_MAP[3]
 
-DARK = 9
-MIDDLE = 10
-LIGHT = 11
-
-def rocks(img, palette, seed_obj):
-    seed = os.urandom(1000)
-    random.seed()
-    palette.set_color(DARK, (0x33, 0xAF, 0xE0))
-    palette.set_color(MIDDLE, (0x6C, 0xE0, 0xFF))
-    palette.set_color(LIGHT, (0xBA, 0xF4, 0xFF))
+def rocks(img, seed_obj):
+    random.seed(seed_obj['base_seed'])
 
     draw = ImageDraw.Draw(img)
     base_height = 10
@@ -26,7 +22,7 @@ def rocks(img, palette, seed_obj):
         else:
             draw_rocks_right(draw, x_cord, y_cord)
 
-    return (img, palette)
+    return img
 
 
 def draw_rocks_left(draw, x_cord, y_cord):
