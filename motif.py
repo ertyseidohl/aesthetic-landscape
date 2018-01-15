@@ -25,10 +25,10 @@ def register_function(func):
     funcs.append(func)
 
 register_function(stages.background)
-register_function(stages.water)
 register_function(stages.mountains)
 register_function(stages.rocks)
 register_function(stages.moon)
+register_function(stages.water)
 
 for func in funcs:
     img, palette = func(img, palette, seed_object)
