@@ -3,7 +3,12 @@ import random
 WATER_COLOR_P = 20
 WATER_COLOR_RGB = (0xe3, 0xba, 0xff)
 
-def water(img, palette, seed_obj):
+
+def water(layers, layer_factory, palette, seed_obj):
+
+    layer = layer_factory('rocks')
+    img = layer.img
+
     (width, height) = img.size
     horizon = seed_obj['horizon']
 
@@ -21,7 +26,7 @@ def water(img, palette, seed_obj):
     palette.set_color(44, (0xff, 0x00, 0x66))
     palette.set_color(55, (0xff, 0x66, 0x00))
 
-    return (img, palette)
+    return (layer, palette)
 
 def _cast_ray(bg, cast_result, width, height, horizon, x, refl_point):
     y = refl_point

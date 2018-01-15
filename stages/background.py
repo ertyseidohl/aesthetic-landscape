@@ -9,7 +9,12 @@ PATTERNS = ('none', 'dither', 'diag')
 DARK = (0xe3, 0xba, 0xff)
 LIGHT = (0xff, 0xda, 0xf1)
 
-def background(img, palette, seed_obj):
+
+def background(layers, layer_factory, palette, seed_obj):
+
+    layer = layer_factory('rocks')
+    img = layer.img
+
     random.seed(seed_obj['base_seed'])
 
     num_colors = random.randint(4, MAX_COLORS)
@@ -47,7 +52,7 @@ def background(img, palette, seed_obj):
         color = next(color_gen)
         palette.set_color(COLOR_OFFSET + i, color)
 
-    return (img, palette)
+    return (layer, palette)
 
 def swap(bg, width, x1, y1, x2, y2):
     bg[y1 * width + x1], bg[y2 * width + x2] = bg[y2 * width + x2], bg[y1 * width + x1]
