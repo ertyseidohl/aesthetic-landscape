@@ -5,10 +5,6 @@ import colors
 
 from util import lerp
 
-LIGHT = colors.LIGHT_BLUE
-DARK = colors.DARK_BLUE
-WHITE = colors.WHITE
-
 class Mountain:
 
     def __init__(self):
@@ -77,7 +73,11 @@ def mountains(layers, layer_factory, seed_obj):
             if random.choices([False, False, False, False, True]):
                 mountain.add_patch(random.random())
             mountain.shift_y(i * 100)
-            mountain.draw(draw, colors.DARK_BLUE + i)
+            mountain.draw(draw, random.choice((
+                colors.FG_LIGHT,
+                colors.FG_MID,
+                colors.FG_DARK,
+            )))
     del draw
 
     return layer

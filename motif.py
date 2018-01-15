@@ -13,8 +13,8 @@ import stages
 
 palette = PaletteWrapper()
 
-# base_seed = random.randint(0, sys.maxsize)
-base_seed = 512
+base_seed = random.randint(0, sys.maxsize)
+# base_seed = 512
 
 random.seed(base_seed)
 
@@ -50,7 +50,7 @@ for layer in layers:
     image_data = [image_data[i] if layer_img_data[i] == 255 else layer_img_data[i] for i in range(len(image_data))]
     image.putdata(image_data)
 
-palette.set_colors(colors.COLOR_MAP)
+palette.set_colors(colors.generate_palette(seed_object))
 image.putpalette(ImagePalette.ImagePalette('RGB', palette.serialize()))
 
 image = image.resize((1024, 1024), resample=Image.NEAREST)

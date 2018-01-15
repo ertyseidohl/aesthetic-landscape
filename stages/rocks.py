@@ -3,10 +3,6 @@ from PIL import Image, ImageDraw
 import os
 import colors
 
-DARK = colors.COLOR_MAP[1]
-MIDDLE = colors.COLOR_MAP[2]
-LIGHT = colors.COLOR_MAP[3]
-
 def rocks(layers, layer_factory, seed_obj):
     random.seed(seed_obj['base_seed'])
 
@@ -53,7 +49,7 @@ def draw_rocks_left(draw, x_cord, y_cord):
     bot_coords.reverse()
     coords = top_coords + bot_coords
 
-    draw.polygon(coords, fill=MIDDLE, outline=DARK)
+    draw.polygon(coords, fill=colors.FG_MID, outline=colors.FG_DARK)
     bot_coords.reverse()
     for i in range(1, len(top_coords) - 1):
         if (i-1)%5 == 0 and i+5 < len(top_coords)-1:
@@ -62,7 +58,7 @@ def draw_rocks_left(draw, x_cord, y_cord):
             (ax, ay) = light_coords[0]
             (bx, by) = light_coords[-1]
             end = [ (ax + bx)/2, (ay + by)/2 + (heights[i-5] + heights[i])/3]
-            draw.polygon(light_coords + end, fill=LIGHT, outline=LIGHT)
+            draw.polygon(light_coords + end, fill=colors.FG_LIGHT, outline=colors.FG_LIGHT)
 
 
 
@@ -91,7 +87,7 @@ def draw_rocks_right(draw, x_cord, y_cord):
     bot_coords.reverse()
     coords = top_coords + bot_coords
 
-    draw.polygon(coords, fill=MIDDLE, outline=DARK)
+    draw.polygon(coords, fill=colors.FG_MID, outline=colors.FG_DARK)
     bot_coords.reverse()
     for i in range(1, len(top_coords) - 1):
         if (i-1)%5 == 0 and i+6 < len(top_coords)-1:
@@ -100,4 +96,4 @@ def draw_rocks_right(draw, x_cord, y_cord):
             (ax, ay) = light_coords[0]
             (bx, by) = light_coords[-1]
             end = [ (ax + bx)/2, (ay + by)/2 + (heights[i-5] + heights[i])/3]
-            draw.polygon(light_coords + end, fill=LIGHT, outline=LIGHT)
+            draw.polygon(light_coords + end, fill=colors.FG_LIGHT, outline=colors.FG_LIGHT)

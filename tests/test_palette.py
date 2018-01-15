@@ -1,6 +1,6 @@
 import pytest
 
-from motif.palette import PaletteWrapper
+from motif.palettewrapper import PaletteWrapper
 
 def test_set_color():
     palette = PaletteWrapper()

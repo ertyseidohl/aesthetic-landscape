@@ -4,7 +4,7 @@ from util import lerp
 import colors
 
 PATTERNS = ('none', 'dither', 'diag')
-COLORS = range(colors.DARK_PURPLE, colors.LIGHT_PURPLE)
+COLORS = range(colors.BG_DARKEST, colors.BG_LIGHTEST)
 
 
 def background(layers, layer_factory, seed_obj):
@@ -15,7 +15,8 @@ def background(layers, layer_factory, seed_obj):
     random.seed(seed_obj['base_seed'])
 
     num_colors = len(COLORS)
-    pattern = random.choice(PATTERNS)
+    # pattern = random.choice(PATTERNS)
+    pattern = 'diag'
 
     bg = []
 
@@ -38,8 +39,9 @@ def background(layers, layer_factory, seed_obj):
     if pattern == 'diag':
         BAND_WIDTH = random.randint(50, 150)
         band = [ceil(i / BAND_WIDTH) % num_colors for i in range(width)]
+        band[0] = band[1] # fix 0th index
         for y in range(height):
-            bg += [band[(i + y) % len(band)] for i in range(len(band))]
+            bg += [COLORS[band[(i + y) % len(band)]] for i in range(len(band))]
 
     img.putdata(bg)
 
