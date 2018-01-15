@@ -10,17 +10,9 @@ def water(img, palette, seed_obj):
 
 	bg = list(img.getdata())
 
-	for y in range(horizon, height):
-		refl_y = horizon + (horizon - y) - 1
-		is_reflected = refl_y > 0
-		for x in range(width):
-			coord = (y * width) + x
-			if bg[coord] == 255:
-				if is_reflected:
-					color = bg[(refl_y * width) + x]
-					bg[coord] = 44
-				else:
-					bg[coord] = WATER_COLOR_P
+	for x in range(width):
+		for y in range(height - horizon):
+			_cast_ray(bg, x, horizon)
 
 	img.putdata(bg)
 
@@ -30,4 +22,5 @@ def water(img, palette, seed_obj):
 
 	return (img, palette)
 
+def _cast_ray(bg, x, min_y):
 
