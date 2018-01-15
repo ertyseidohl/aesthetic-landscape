@@ -1,5 +1,6 @@
-import random
+import math
 from PIL import ImageDraw
+import random
 
 from util import lerp
 
@@ -12,9 +13,51 @@ class Mountain:
 
     def __init__(self):
         self.outline = []
+        self.peak = ()
+        self.patches = []
 
     def draw(self, draw,fill):
         draw.polygon(self.outline, fill=fill)
+        for patch in self.patches:
+
+            for i, row in enumerate(patch):
+                for j, tup in enumerate(row):
+                    if tup and tup[2]:
+                        draw.point((tup[0], tup[1]), fill=fill-1)
+
+    def outline_tail(self):
+        return self.outline[len(self.outline) -1]
+
+    def height(self):
+        return max(self.outline[0][1] - self.peak[1], self.outline_tail()[1])
+
+    def add_patch(self, weight):
+
+        width = 20
+        height = 20
+        patch = [[0 for _ in range(width)] for _ in range(height)]
+
+        origin_x = self.peak[0] + 5
+        origin_y = self.peak[1] + 50
+
+        for j in range(height):
+            start_x = 0
+            start_y = j
+
+            offset_bottom = math.ceil((random.triangular() * width) / 2)
+            offset_top = width - math.ceil((random.triangular() * width) / 2)
+
+            i = 0
+            while start_y >= 0 and start_x >= 0:
+                if i > offset_bottom and i < offset_top:
+                    patch[start_y][start_x] = (origin_x + start_x, origin_y + start_y, 1)
+                else:
+                    patch[start_y][start_x] = (origin_x + start_x, origin_y + start_y, 0)
+
+                i += 1
+                start_y = start_y - 1
+                start_x = start_x + 1
+        self.patches.append(patch)
 
     def shift_y(self, amount):
         self.outline = [(xy[0], xy[1] + amount) for xy in self.outline]
@@ -29,6 +72,8 @@ def mountains(img, palette, seed_obj):
 
     for i, mountain_range in enumerate(mountain_ranges):
         for mountain in mountain_range:
+            if random.choices([False, False, False, False, True]):
+                mountain.add_patch(random.random())
             mountain.shift_y(i * 100)
             mountain.draw(draw, i + COLOR_OFFSET)
     del draw
@@ -54,21 +99,11 @@ def _walk(peak_xy, height):
     mountain = Mountain()
     mountain.peak = peak_xy
     mountain.outline = [peak_xy]
-    mountain.patches = []
 
     walk_xy = mountain.peak
     while walk_xy[1] <= height:
         walk_xy = (walk_xy[0] - random.randint(1, 30), walk_xy[1] + random.randint(1, 30))
         mountain.outline.append(walk_xy)
-
-        if random.randint(0, 10) > 5:
-            walk_index = len(mountain.outline) - 1
-
-            x_shift = walk_index * 2 + random.randint(0, 2)
-
-            start = mountain.outline[walk_index][0] + x_shift, mountain.outline[walk_index][1]
-            end = mountain.outline[walk_index - 1][0] + x_shift, mountain.outline[walk_index -1][1]
-            mountain.patches.append((start, end))
 
     walk_xy = mountain.peak
     while walk_xy[1] <= height:
