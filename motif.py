@@ -9,7 +9,7 @@ img = Image.new('P', (256, 256), color=255)
 palette = PaletteWrapper()
 
 # base_seed = random.randint()
-base_seed = 1024
+base_seed = 512
 
 random.seed(base_seed)
 
