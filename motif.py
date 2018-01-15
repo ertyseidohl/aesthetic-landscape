@@ -3,12 +3,13 @@ import stages
 import time
 from palette import PaletteWrapper
 import random
+import sys
 
 img = Image.new('P', (256, 256), color=255)
 
 palette = PaletteWrapper()
 
-# base_seed = random.randint()
+# base_seed = random.randint(0, sys.maxsize)
 base_seed = 512
 
 random.seed(base_seed)
