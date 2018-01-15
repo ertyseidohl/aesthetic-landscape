@@ -38,4 +38,4 @@ img.putpalette(ImagePalette.ImagePalette('RGB', palette.serialize()))
 img = img.resize((1024, 1024), resample=Image.NEAREST)
 
 img.show()
-img.save('motif_{}.png'.format(int(time.time())), 'PNG')
+img.save(f'img/motif_{int(time.time())}.png', 'PNG')
