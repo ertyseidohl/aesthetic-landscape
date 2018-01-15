@@ -4,8 +4,8 @@ import reflection
 
 import colors
 
-WATER_COLOR = colors.BG_DARK
-WATER_REFL_COLOR = colors.BG_DARKER
+WATER_COLOR = colors.BG_DARKER
+WATER_REFL_COLOR = colors.BG_DARK
 
 def water(layers, layer_factory, seed_obj):
 
@@ -16,7 +16,14 @@ def water(layers, layer_factory, seed_obj):
     fill_water_layer.img.putdata(fill_water_data)
     layers.append(fill_water_layer)
 
-    # _reflect_horizon('moon')
+    moon_reflector = Reflector(
+        _get_layer_by_name('moon', layers),
+        layer_factory('moon_refl', reflection.IS_REFLECTION),
+        seed_obj,
+        mask
+    )
+    moon_reflector.reflect_horizon(exclude_colors=[colors.BG_LIGHTEST])
+    layers.append(moon_reflector.get_result_layer())
 
     mountain_reflector = Reflector(
         _get_layer_by_name('mountains', layers),
@@ -35,9 +42,6 @@ def water(layers, layer_factory, seed_obj):
     )
     rocks_reflector.reflect_base()
     layers.append(rocks_reflector.get_result_layer())
-
-    # _reflect_base('mountains', seed_obj)
-
 
     return layers
 
@@ -76,13 +80,18 @@ class Reflector:
         for x in range(self.width):
             self._cast_ray(x, self.horizon)
 
-    def reflect_horizon(self):
+    def reflect_horizon(self, exclude_colors = None):
+        if not exclude_colors:
+            exclude_colors = []
+        exclude_colors += [colors.TRANSPARENT]
         for y_offset in range(self.height - self.horizon + 1):
-            orig_y = self.horizon - y_offset
-            for x in range(self.width):
-                coord = (self.horizon + y_offset - 1) * self.width + x
-                if self.mask[coord]:
-                    self.refl_data[coord] = self.orig_data[orig_y * self.width + x]
+            if y_offset % 2 == 0:
+                orig_y = self.horizon - y_offset
+                for x in range(self.width):
+                    coord = (self.horizon + y_offset - 1) * self.width + x
+                    orig_pixel = self.orig_data[orig_y * self.width + x]
+                    if self.mask[coord] and orig_pixel not in exclude_colors:
+                        self.refl_data[coord] = WATER_REFL_COLOR
 
     def get_result_layer(self):
         self.refl_layer.img.putdata(self.refl_data)
