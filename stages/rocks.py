@@ -37,11 +37,12 @@ def draw_rocks_left(draw, x_cord, y_cord):
     i = 0
     while x >= 0:
         w = random.randint(5, 10)
-        h = random.randint(-5, 5)
+        h = random.randint(-2, 2)
         (x, y) = (x - w, y + h)
-        (x2, y2) = (x + random.randint(-2, 2), y + random.randint(3,10) + i)
+        (x2, y2) = (x + random.randint(-1, 1), y - random.randint(3,10) - i)
         bot_coords.append((x, y))
         top_coords.append((x2, y2))
+        draw.line([(x,y), (x2,y2)], fill=LIGHT)
         i += 1
     bot_coords.reverse()
     coords = top_coords + bot_coords
@@ -59,7 +60,7 @@ def draw_rocks_right(draw, x_cord, y_cord):
         w = random.randint(5, 10)
         h = random.randint(-5, 5)
         (x, y) = (x + w, y + h)
-        (x2, y2) = (x + random.randint(-2, 2), y + random.randint(3,10) + i)
+        (x2, y2) = (x + random.randint(-2, 2), y - random.randint(3,10) - i)
         bot_coords.append((x, y))
         top_coords.append((x2, y2))
         i += 1
