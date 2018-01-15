@@ -6,12 +6,36 @@ from PIL import ImageDraw
 import colors
 import reflection
 
+class MountainRange:
+
+    def __init__(self, num_peaks, horizon, width):
+        self.horizon = horizon
+        self.num_peaks = num_peaks
+        self.width = width
+
+        bandwidth_factor = random.triangular()
+        yshift_factor = random.random() - 0.5
+        mid = (horizon / 2)
+        yshift = mid * yshift_factor
+        band_middle = mid + yshift
+
+        top_height = int(max(band_middle - (mid * bandwidth_factor), 20))
+        bottom_height = int(min(band_middle + (mid * bandwidth_factor), horizon - horizon / 10))
+
+        peak_xy_list = [(random.randint(0, width), random.randint(top_height, bottom_height)) for _ in range(num_peaks)]
+        peak_xy_list = sorted(peak_xy_list, key=lambda x: x[0])
+
+        self.mountains = [Mountain(peak, self.horizon) for peak in peak_xy_list]
+
+
 class Mountain:
 
-    def __init__(self):
+    def __init__(self, peak, horizon):
         self.outline = []
-        self.peak = ()
+        self.peak = peak
+        self.horizon = horizon
         self.patches = []
+        _walk(self)
 
     def draw(self, draw,fill):
         draw.polygon(self.outline, fill=fill)
@@ -59,21 +83,24 @@ class Mountain:
     def shift_y(self, amount):
         self.outline = [(xy[0], xy[1] + amount) for xy in self.outline]
 
+
 def mountains(layers, layer_factory, seed_obj):
     random.seed(seed_obj['base_seed'])
+
+    horizon = seed_obj['horizon']
+    width = seed_obj['width']
 
     layer = layer_factory('mountains', reflection.REFLECT_BASE)
     img = layer.img
 
-    mountain_range_count = random.randint(2, 4)
-    mountain_ranges = [_build_range(random.randint(3, 5), 256, 100) for _ in range(mountain_range_count)]
+    num_peaks = random.randint(4, 7)
+    mountain_ranges = [MountainRange(num_peaks=num_peaks, horizon=horizon, width=width)]
     draw = ImageDraw.Draw(img)
 
     for i, mountain_range in enumerate(mountain_ranges):
-        for mountain in mountain_range:
+        for mountain in mountain_range.mountains:
             # if random.choices([False, False, False, False, True]):
             #     mountain.add_patch(random.random())
-            mountain.shift_y(i * 100)
             mountain.draw(draw, random.choice((
                 colors.FG_LIGHT,
                 colors.FG_MID,
@@ -83,30 +110,53 @@ def mountains(layers, layer_factory, seed_obj):
 
     return layer
 
+SLOPES = [
+    (0, 0),
+    (4, 1),
+    (3, 1),
+    (2, 1),
+    (1, 1),
+    (1, 2),
+    (1, 3),
+    (1, 4)
+]
 
-def _build_range(peak_num, width, height):
 
-    peak_xy_list = [(random.randint(0, width), random.randint(0, height)) for _ in range(peak_num)]
-    peak_xy_list = sorted(peak_xy_list, key=lambda x: x[0])
-
-    mountain_range = [_walk(peak, height) for peak in peak_xy_list]
-    return mountain_range
+def _slope_start():
+    slope_index = 0
+    slope_stability = 0.
+    return slope_index, slope_stability
 
 
-def _walk(peak_xy, height):
+def _slope_stability(slope_index, slope_stability):
 
-    mountain = Mountain()
-    mountain.peak = peak_xy
-    mountain.outline = [peak_xy]
+    if slope_stability + random.random() > 1.25:
+        slope_index = slope_index + random.choice([1, 1, 1, -1, 2, -2])
+        slope_stability = 0
+    else:
+        slope_stability += 0.1
+
+    slope_index = max(slope_index, 0)
+    slope_index = min(slope_index, len(SLOPES) -1)
+
+    return slope_index, slope_stability
+
+def _walk(mountain):
+
+    mountain.outline = [mountain.peak]
 
     walk_xy = mountain.peak
-    while walk_xy[1] <= height:
-        walk_xy = (walk_xy[0] - random.randint(1, 30), walk_xy[1] + random.randint(1, 30))
+    slope_index, slope_stability = _slope_start()
+    while walk_xy[1] <= mountain.horizon:
+        slope_index, slope_stability = _slope_stability(slope_index, slope_stability)
+        walk_xy = (walk_xy[0] - SLOPES[slope_index][0], walk_xy[1] + SLOPES[slope_index][1])
         mountain.outline.append(walk_xy)
 
     walk_xy = mountain.peak
-    while walk_xy[1] <= height:
-        walk_xy = (walk_xy[0] + random.randint(1, 30), walk_xy[1] + random.randint(1, 30))
+    slope_index, slope_stability = _slope_start()
+    while walk_xy[1] <= mountain.horizon:
+        slope_index, slope_stability = _slope_stability(slope_index, slope_stability)
+        walk_xy = (walk_xy[0] + SLOPES[slope_index][0], walk_xy[1] + SLOPES[slope_index][1])
         mountain.outline.append(walk_xy)
 
     mountain.outline = sorted(mountain.outline, key=lambda x: x[0])
