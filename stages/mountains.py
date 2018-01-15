@@ -63,8 +63,11 @@ class Mountain:
         self.outline = [(xy[0], xy[1] + amount) for xy in self.outline]
 
 
-def mountains(img, palette, seed_obj):
+def mountains(layers, layer_factory, palette, seed_obj):
     random.seed(seed_obj['base_seed'])
+
+    layer = layer_factory('mountains')
+    img = layer.img
 
     mountain_range_count = random.randint(2, 4)
     mountain_ranges = [_build_range(random.randint(3, 5), 256, 100) for _ in range(mountain_range_count)]
@@ -82,7 +85,7 @@ def mountains(img, palette, seed_obj):
     for i in range(mountain_range_count):
         palette.set_color(i + COLOR_OFFSET, next(color_gen))
 
-    return img, palette
+    return layer, palette
 
 
 def _build_range(peak_num, width, height):

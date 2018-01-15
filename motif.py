@@ -1,11 +1,12 @@
-from PIL import Image, ImagePalette
-import stages
-import time
-from palette import PaletteWrapper
 import random
 import sys
+import time
 
-img = Image.new('P', (256, 256), color=255)
+from PIL import Image, ImagePalette
+
+from layer import layer_factory
+from palette import PaletteWrapper
+import stages
 
 palette = PaletteWrapper()
 
@@ -16,10 +17,8 @@ random.seed(base_seed)
 
 seed_object = {
     'base_seed': base_seed,
-    'horizon': int(random.triangular(64, 192))
-    'colors': [
-
-    ]
+    'horizon': int(random.triangular(64, 192)),
+    'colors': []
 }
 
 funcs = []
@@ -33,13 +32,26 @@ register_function(stages.rocks)
 register_function(stages.moon)
 register_function(stages.water)
 
+layers = []
 for func in funcs:
-    img, palette = func(img, palette, seed_object)
+    new_layers, palette = func(layers, layer_factory, palette, seed_object)
+    if type(new_layers) == list:
+        layers = layers + new_layers
+    else:
+        layers.append(new_layers)
+
+image = layer_factory('base').img
+for layer in layers:
+    layer_img_data = list(layer.img.getdata())
+    image_data = image.getdata()
+
+    image_data = [image_data[i] if layer_img_data[i] == 255 else layer_img_data[i] for i in range(len(image_data))]
+    image.putdata(image_data)
 
 palette.set_color(255, (0xff, 0x00, 0x00))
-img.putpalette(ImagePalette.ImagePalette('RGB', palette.serialize()))
+image.putpalette(ImagePalette.ImagePalette('RGB', palette.serialize()))
 
-img = img.resize((1024, 1024), resample=Image.NEAREST)
+image = image.resize((1024, 1024), resample=Image.NEAREST)
 
-img.show()
-img.save(f'img/motif_{int(time.time())}.png', 'PNG')
+image.show()
+image.save(f'img/motif_{int(time.time())}.png', 'PNG')

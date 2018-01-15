@@ -7,7 +7,12 @@ DARK = 9
 MIDDLE = 10
 LIGHT = 11
 
-def rocks(img, palette, seed_obj):
+
+def rocks(layers, layer_factory, palette, seed_obj):
+
+    layer = layer_factory('rocks')
+    img = layer.img
+
     seed = os.urandom(1000)
     random.seed()
     palette.set_color(DARK, (0x33, 0xAF, 0xE0))
@@ -26,7 +31,7 @@ def rocks(img, palette, seed_obj):
         else:
             draw_rocks_right(draw, x_cord, y_cord)
 
-    return (img, palette)
+    return (layer, palette)
 
 
 def draw_rocks_left(draw, x_cord, y_cord):
