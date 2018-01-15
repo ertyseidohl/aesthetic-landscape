@@ -41,6 +41,8 @@ def _cast_water(bg, width, height, horizon, x, refl_point):
 	while y < height and bg[y * width + x] == 255:
 		if y % 2 == 0:
 			refl_y = refl_point + (refl_point - y) - 1
+			if (bg[refl_y * width + x] == 255): # if we have hit water again
+				return y
 			bg[y * width + x] = bg[refl_y * width + x]
 		else:
 			bg[y * width + x] = WATER_COLOR_P
