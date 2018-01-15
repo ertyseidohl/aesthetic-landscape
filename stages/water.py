@@ -4,8 +4,8 @@ import reflection
 
 import colors
 
-WATER_COLOR = colors.BG_DARKER
-WATER_REFL_COLOR = colors.BG_DARK
+WATER_COLOR = colors.BG_LIGHT
+WATER_REFL_COLOR = colors.BG_LIGHTER
 
 def water(layers, layer_factory, seed_obj):
 
@@ -43,6 +43,10 @@ def water(layers, layer_factory, seed_obj):
     rocks_reflector.reflect_base()
     layers.append(rocks_reflector.get_result_layer())
 
+    # water_lights_layer = layer_factory('water_lights', reflection.NONE)
+    # _generate_water_lights(water_lights_layer, mask, seed_obj)
+    # layers.append(water_lights_layer)
+
     return layers
 
 def _get_water_mask(layers, width, height):
@@ -64,6 +68,23 @@ def _get_layer_by_name(name, layers):
         if layer.name == name:
             return layer
     raise ValueError(f'No layer with name {name}')
+
+def _generate_water_lights(lights_layer, mask, seed_obj):
+    width = seed_obj['width']
+    height = seed_obj['height']
+    horizon = seed_obj['horizon']
+    lights_layer_data = [colors.TRANSPARENT for i in range(width * height)]
+
+    # mid light streaks
+    for y in range(horizon, height):
+        if random.random() < 0.1:
+            for x in range(random.randint(0, width // 3), random.randint(int(width*(2/3)), width)):
+                if mask[y * width + x] and random.random() < 0.8:
+                    lights_layer_data[y * width + x] = colors.WHITE
+
+    lights_layer.img.putdata(lights_layer_data)
+
+
 
 class Reflector:
     def __init__(self, orig_layer, refl_layer, seed_obj, mask):
