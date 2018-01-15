@@ -11,7 +11,7 @@ def water(img, palette, seed_obj):
 	cast_result = bg[:]
 
 	for x in range(width):
-		_cast_ray(cast_result, width, height, horizon, x, horizon)
+		_cast_ray(bg, cast_result, width, height, horizon, x, horizon)
 
 	bg = [cast_result[i] if bg[i] == 255 else bg[i] for i in range(len(bg))]
 
@@ -23,29 +23,32 @@ def water(img, palette, seed_obj):
 
 	return (img, palette)
 
-def _cast_ray(bg, width, height, horizon, x, refl_point):
+def _cast_ray(bg, cast_result, width, height, horizon, x, refl_point):
 	y = refl_point
 	while y < height:
 		if bg[y * width + x] == 255:
-			y = _cast_water(bg, width, height, horizon, x, y)
+			y = _cast_water(bg, cast_result, width, height, horizon, x, y)
 		else:
-			y = _cast_land(bg, width, height, horizon, x, y)
+			y = _cast_land(bg, cast_result, width, height, horizon, x, y)
 
-def _cast_land(bg, width, height, horizon, x, y):
+def _cast_land(bg, cast_result, width, height, horizon, x, y):
 	while y < height and bg[y * width + x] != 255:
 		y += 1
 	return y
 
-def _cast_water(bg, width, height, horizon, x, refl_point):
+def _cast_water(bg, cast_result, width, height, horizon, x, refl_point):
 	y = refl_point
 	while y < height and bg[y * width + x] == 255:
+		refl_y = refl_point + (refl_point - y) - 1
+		if (bg[refl_y * width + x] == 255):
+			# if we have hit water again
+			return y + 1
+
 		if y % 2 == 0:
-			refl_y = refl_point + (refl_point - y) - 1
-			if (bg[refl_y * width + x] == 255): # if we have hit water again
-				return y
-			bg[y * width + x] = bg[refl_y * width + x]
+			cast_result[y * width + x] = bg[refl_y * width + x]
 		else:
-			bg[y * width + x] = WATER_COLOR_P
+			cast_result[y * width + x] = WATER_COLOR_P
+
 		y += 1
 	return y
 
