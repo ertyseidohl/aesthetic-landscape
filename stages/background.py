@@ -15,8 +15,8 @@ def background(layers, layer_factory, seed_obj):
     random.seed(seed_obj['base_seed'])
 
     num_colors = len(COLORS)
-    # pattern = random.choice(PATTERNS)
-    pattern = 'diag'
+    pattern = random.choice(PATTERNS)
+    # pattern = 'diag'
 
     bg = []
 
@@ -54,11 +54,11 @@ def swap(bg, width, x1, y1, x2, y2):
 def _fill_bands(width, height, num_colors):
     bg = []
     total_pixels = width * height
-    band_pixels = int(total_pixels / num_colors)
+    band_height = int(height / num_colors)
     for i in COLORS:
-        bg += [i for x in range(band_pixels)]
-    count = band_pixels * num_colors
+        bg += [i for x in range(band_height * width)]
+    count = band_height * width * num_colors
     while count < total_pixels:
-        bg += [num_colors - 1]
+        bg += [COLORS[num_colors - 1]]
         count += 1
     return bg

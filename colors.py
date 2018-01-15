@@ -17,6 +17,9 @@ FG_LIGHT = 9
 TRANSPARENT = 10
 TRANSPARENT_RGB = (0xff, 0x00, 0xff)
 
+TEST_COLOR = 11
+TEST_COLOR_RGB = (0xcc, 0xcc, 0xcc)
+
 _purples = (
     (0x0b, 0x00, 0x84),
     (0x53, 0x09, 0xd3),
@@ -51,14 +54,16 @@ def generate_palette(seed_obj):
     random.seed(seed_obj['base_seed'])
 
     choices = (
-        _yellows,
-        _oranges,
-        _pinks,
+        # _yellows,
+        # _oranges,
+        # _pinks,
         _purples,
         _teals,
     )
 
     bg_choice = random.choice(choices)
+
+    print(bg_choice)
 
     bg_lerp = lerp(bg_choice[2], bg_choice[0], 6)
     fg_base = random.choice(choices)
@@ -75,6 +80,7 @@ def generate_palette(seed_obj):
         fg_base[1], # 8
         fg_base[2], # 9
         TRANSPARENT_RGB, #10
+        TEST_COLOR_RGB, #11
     ]
 
     return color_map
