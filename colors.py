@@ -54,9 +54,9 @@ def generate_palette(seed_obj):
     random.seed(seed_obj['base_seed'])
 
     choices = (
-        # _yellows,
-        # _oranges,
-        # _pinks,
+        _yellows,
+        _oranges,
+        _pinks,
         _purples,
         _teals,
     )

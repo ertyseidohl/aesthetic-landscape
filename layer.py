@@ -1,7 +1,7 @@
 from PIL import Image
 import colors
 
-IMAGE_SIZE = (256, 256)
+IMAGE_SIZE = (150, 150)
 
 class Layer:
     def __init__(self, name, reflection):

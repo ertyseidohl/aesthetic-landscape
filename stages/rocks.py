@@ -6,97 +6,81 @@ from PIL import Image, ImageDraw
 import colors
 import reflection
 
+MAX_ROCK_HEIGHT = 10
+TOP_DECREASE_PERCENTAGE = 0.25
+BOTTOM_DECREASE_PERCENTAGE = 0.05
+
 def rocks(layers, layer_factory, seed_obj):
     random.seed(seed_obj['base_seed'])
+    horizon = seed_obj['horizon']
+    height = seed_obj['height']
 
-    layer = layer_factory('rocks', reflection.REFLECT_BASE)
-    img = layer.img
+    spits_layers = []
 
-    draw = ImageDraw.Draw(img)
-    base_height = 10
+    y_min = random.randint(horizon - 25, height - 25)
+    y_max = y_min + random.randint(10, 30)
+    layer1 = layer_factory('spit_1', reflection.REFLECT_BASE)
+    _draw_spit(layer1, y_min, y_max, seed_obj, from_left=True)
+    spits_layers.append(layer1)
 
-    for i in range(random.randint(3, 5)):
-        x_cord = random.randint(25, 225)
-        y_cord = random.randint(125, 225)
+    y_min = random.randint(horizon - 25, height - 25)
+    y_max = y_min + random.randint(10, 30)
+    layer2 = layer_factory('spit_2', reflection.REFLECT_BASE)
+    _draw_spit(layer2, y_min, y_max, seed_obj, from_left=False)
+    spits_layers.append(layer2)
 
-        if x_cord < 125:
-            draw_rocks_left(draw, x_cord, y_cord)
-        else:
-            draw_rocks_right(draw, x_cord, y_cord)
+    return spits_layers
 
-    return layer
+def _draw_spit(layer, y_min, y_max, seed_obj, from_left=None):
+    height = seed_obj['height']
+    width = seed_obj['width']
+    horizon = seed_obj['horizon']
 
+    y_max = min(y_max, height)
 
-def draw_rocks_left(draw, x_cord, y_cord):
-    (top_coords, bot_coords) = ([(x_cord,y_cord)], [])
-    heights = []
+    spit_buffer = [colors.TRANSPARENT for i in range(width * height)]
 
-    (x, y) = (x_cord, y_cord)
-    (x2, y2) = (x, y)
-    i = 0
-    j = 0
-    while x >= 0:
-        w = random.randint(2, 3)
-        h = random.randint(-2, 2)
-        (x, y) = (x - w, y + h)
-        h = random.randint(6,10)
-        if i%5 == 0:
-            h = random.randint(3,6)
-            j += 1
-        heights.append(h)
-        (x2, y2) = (x + random.randint(-1, 1), y - h - j)
-        bot_coords.append((x, y))
-        top_coords.append((x2, y2))
-        i += 1
+    from_left = random.random() < 0.5 if from_left == None else from_left
+    x = 0 if from_left else width - 1
+    rock_height = random.randint(0, MAX_ROCK_HEIGHT)
+    rock_height = 3
+    rock_delta_height = 0
+    while y_max > y_min and x >= 0 and x < width:
+        for y in range(y_min, y_max):
+            coord = y * width + x
+            if y == y_min or y == y_max - rock_height or y == y_max - 1:
+                spit_buffer[coord] = colors.FG_DARK
+            elif y > y_max - rock_height:
+                from_top = y - (y_max - rock_height)
+                if from_left and from_top < 4 and rock_delta_height > 0:
+                    spit_buffer[coord] = colors.FG_LIGHT
+                elif not from_left and from_top < 4 and rock_delta_height < 0:
+                    spit_buffer[coord] = colors.FG_LIGHT
+                else:
+                    spit_buffer[coord] = colors.FG_MID
+            else:
+                if (x + y) % 2 == 0:
+                    spit_buffer[coord] = colors.FG_DARK
+                else:
+                    spit_buffer[coord] = colors.FG_MID
+        if random.random() < TOP_DECREASE_PERCENTAGE:
+            y_min += 1
+        if random.random() < BOTTOM_DECREASE_PERCENTAGE and y_max > horizon:
+            y_max -= 1
 
-    bot_coords.reverse()
-    coords = top_coords + bot_coords
+        if rock_delta_height > 0 and random.random() < 0.8:
+            rock_delta_height -= 1
+        elif rock_delta_height == 0 and random.random() < 0.4:
+            rock_delta_height -= 1
+        elif rock_delta_height < 0 and random.random() < 0.3:
+            rock_delta_height -= 1
+        rock_height += rock_delta_height
 
-    draw.polygon(coords, fill=colors.FG_MID, outline=colors.FG_DARK)
-    bot_coords.reverse()
-    for i in range(1, len(top_coords) - 1):
-        if (i-1)%5 == 0 and i+5 < len(top_coords)-1:
-            light_coords = [(x,y+1) for (x,y) in top_coords[i:i+5] ]
+        if rock_height <= 0:
+            rock_delta_height = random.randint(1, 4)
+        if rock_height > y_max - y_min:
+            rock_height = y_max - y_min
 
-            (ax, ay) = light_coords[0]
-            (bx, by) = light_coords[-1]
-            end = [ (ax + bx)/2, (ay + by)/2 + (heights[i-5] + heights[i])/3]
-            draw.polygon(light_coords + end, fill=colors.FG_LIGHT, outline=colors.FG_LIGHT)
+        x += 1 if from_left else -1
 
-
-
-def draw_rocks_right(draw, x_cord, y_cord):
-    (top_coords, bot_coords) = ([(x_cord,y_cord)], [])
-    heights = []
-
-    (x, y) = (x_cord, y_cord)
-    (x2, y2) = (x, y)
-    i = 0
-    j = 0
-    while x <= 255:
-        w = random.randint(2, 3)
-        h = random.randint(-2, 2)
-        (x, y) = (x + w, y + h)
-        h = random.randint(6,10)
-        if i%5 == 0:
-            h = random.randint(3,6)
-            j += 1
-        heights.append(h)
-        (x2, y2) = (x + random.randint(-1, 1), y - h - j)
-        bot_coords.append((x, y))
-        top_coords.append((x2, y2))
-        i += 1
-
-    bot_coords.reverse()
-    coords = top_coords + bot_coords
-
-    draw.polygon(coords, fill=colors.FG_MID, outline=colors.FG_DARK)
-    bot_coords.reverse()
-    for i in range(1, len(top_coords) - 1):
-        if (i-1)%5 == 0 and i+6 < len(top_coords)-1:
-            light_coords = [(x,y+1) for (x,y) in top_coords[i+1:i+6] ]
-
-            (ax, ay) = light_coords[0]
-            (bx, by) = light_coords[-1]
-            end = [ (ax + bx)/2, (ay + by)/2 + (heights[i-5] + heights[i])/3]
-            draw.polygon(light_coords + end, fill=colors.FG_LIGHT, outline=colors.FG_LIGHT)
+    layer.img.putdata(spit_buffer)
