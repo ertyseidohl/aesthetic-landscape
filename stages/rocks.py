@@ -9,7 +9,7 @@ import reflection
 def rocks(layers, layer_factory, seed_obj):
     random.seed(seed_obj['base_seed'])
 
-    layer = layer_factory('rocks', reflection.REFLECT)
+    layer = layer_factory('rocks', reflection.REFLECT_BASE)
     img = layer.img
 
     draw = ImageDraw.Draw(img)

@@ -16,7 +16,8 @@ def background(layers, layer_factory, seed_obj):
     random.seed(seed_obj['base_seed'])
 
     num_colors = len(COLORS)
-    pattern = random.choice(PATTERNS)
+    # pattern = random.choice(PATTERNS)
+    pattern = 'dither'
 
     bg = []
 

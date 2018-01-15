@@ -32,9 +32,9 @@ def register_function(func):
     funcs.append(func)
 
 register_function(stages.background)
+register_function(stages.moon)
 register_function(stages.mountains)
 register_function(stages.rocks)
-register_function(stages.moon)
 register_function(stages.water)
 
 layers = []

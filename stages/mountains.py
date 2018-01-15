@@ -62,7 +62,7 @@ class Mountain:
 def mountains(layers, layer_factory, seed_obj):
     random.seed(seed_obj['base_seed'])
 
-    layer = layer_factory('mountains', reflection.REFLECT)
+    layer = layer_factory('mountains', reflection.REFLECT_BASE)
     img = layer.img
 
     mountain_range_count = random.randint(2, 4)

@@ -44,7 +44,11 @@ def water(layers, layer_factory, seed_obj):
 def _get_water_mask(layers, width, height):
     mask = [True for i in range(width * height)]
     for layer in layers:
-        if layer.reflection in (reflection.REFLECT, reflection.MASK):
+        if layer.reflection in (
+            reflection.REFLECT_BASE,
+            reflection.REFLECT_HORIZON,
+            reflection.MASK
+        ):
             orig_data = list(layer.img.getdata())
             for i in range(len(orig_data)):
                 if orig_data[i] != colors.TRANSPARENT:
