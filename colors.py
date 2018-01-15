@@ -63,7 +63,7 @@ def generate_palette(seed_obj):
 
     bg_choice = random.choice(choices)
 
-    bg_lerp = lerp(bg_choice[2], bg_choice[0], 6)
+    bg_lerp = lerp(bg_choice[0], bg_choice[2], 6)
     fg_base = random.choice(choices)
 
     color_map = [
