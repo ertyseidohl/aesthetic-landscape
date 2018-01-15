@@ -1,6 +1,12 @@
 import random
 from PIL import ImageDraw
 
+from util import lerp
+
+COLOR_OFFSET = 30
+
+LIGHT = (0xBA, 0xF4, 0xFF)
+DARK = (0x33, 0xAF, 0xE0)
 
 class Mountain:
 
@@ -24,8 +30,12 @@ def mountains(img, palette, seed_obj):
     for i, mountain_range in enumerate(mountain_ranges):
         for mountain in mountain_range:
             mountain.shift_y(i * 100)
-            mountain.draw(draw, i)
+            mountain.draw(draw, i + COLOR_OFFSET)
     del draw
+
+    color_gen = lerp(LIGHT, DARK, mountain_range_count)
+    for i in range(mountain_range_count):
+        palette.set_color(i + COLOR_OFFSET, next(color_gen))
 
     return img, palette
 
