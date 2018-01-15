@@ -1,9 +1,10 @@
 import math
-from PIL import ImageDraw
 import random
-import colors
 
-from util import lerp
+from PIL import ImageDraw
+
+import colors
+import reflection
 
 class Mountain:
 
@@ -61,7 +62,7 @@ class Mountain:
 def mountains(layers, layer_factory, seed_obj):
     random.seed(seed_obj['base_seed'])
 
-    layer = layer_factory('mountains')
+    layer = layer_factory('mountains', reflection.REFLECT)
     img = layer.img
 
     mountain_range_count = random.randint(2, 4)
@@ -70,8 +71,8 @@ def mountains(layers, layer_factory, seed_obj):
 
     for i, mountain_range in enumerate(mountain_ranges):
         for mountain in mountain_range:
-            if random.choices([False, False, False, False, True]):
-                mountain.add_patch(random.random())
+            # if random.choices([False, False, False, False, True]):
+            #     mountain.add_patch(random.random())
             mountain.shift_y(i * 100)
             mountain.draw(draw, random.choice((
                 colors.FG_LIGHT,

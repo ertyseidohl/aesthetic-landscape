@@ -10,6 +10,7 @@ from PIL import Image, ImagePalette
 from layer import layer_factory
 from palettewrapper import PaletteWrapper
 import stages
+import reflection
 
 palette = PaletteWrapper()
 
@@ -44,7 +45,7 @@ for func in funcs:
     else:
         layers.append(new_layers)
 
-image = layer_factory('base').img
+image = layer_factory('base', reflection.NONE).img
 for layer in layers:
     layer_img_data = list(layer.img.getdata())
     image_data = image.getdata()

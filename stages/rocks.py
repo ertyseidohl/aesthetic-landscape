@@ -1,12 +1,15 @@
 import random
-from PIL import Image, ImageDraw
 import os
+
+from PIL import Image, ImageDraw
+
 import colors
+import reflection
 
 def rocks(layers, layer_factory, seed_obj):
     random.seed(seed_obj['base_seed'])
 
-    layer = layer_factory('rocks')
+    layer = layer_factory('rocks', reflection.REFLECT)
     img = layer.img
 
     draw = ImageDraw.Draw(img)

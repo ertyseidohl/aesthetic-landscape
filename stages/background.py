@@ -2,6 +2,7 @@ import random
 from math import ceil
 from util import lerp
 import colors
+import reflection
 
 PATTERNS = ('none', 'dither', 'diag')
 COLORS = range(colors.BG_DARKEST, colors.BG_LIGHTEST)
@@ -9,14 +10,13 @@ COLORS = range(colors.BG_DARKEST, colors.BG_LIGHTEST)
 
 def background(layers, layer_factory, seed_obj):
 
-    layer = layer_factory('background')
+    layer = layer_factory('background', reflection.MASK)
     img = layer.img
 
     random.seed(seed_obj['base_seed'])
 
     num_colors = len(COLORS)
     pattern = random.choice(PATTERNS)
-    # pattern = 'diag'
 
     bg = []
 
