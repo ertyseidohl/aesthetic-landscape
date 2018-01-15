@@ -31,26 +31,38 @@ def rocks(img, palette, seed_obj):
 
 def draw_rocks_left(draw, x_cord, y_cord):
     (top_coords, bot_coords) = ([(x_cord,y_cord)], [])
+    heights = []
 
     (x, y) = (x_cord, y_cord)
     (x2, y2) = (x, y)
     i = 0
     while x >= 0:
         w = random.randint(5, 10)
-        h = random.randint(-5, 5)
+        h = random.randint(-2, 2)
         (x, y) = (x - w, y + h)
-        (x2, y2) = (x + random.randint(-2, 2), y + random.randint(3,10) + i)
+        h = random.randint(3,10)
+        heights.append(h)
+        (x2, y2) = (x + random.randint(-1, 1), y - h - i)
         bot_coords.append((x, y))
         top_coords.append((x2, y2))
         i += 1
+
     bot_coords.reverse()
     coords = top_coords + bot_coords
 
     draw.polygon(coords, fill=MIDDLE, outline=DARK)
+    bot_coords.reverse()
+    for i in range(1, len(top_coords) - 1):
+        (ax, ay) = top_coords[i]
+        (bx, by) = top_coords[i+1]
+        (cx, cy) = ( (ax + bx)/2, (ay + by)/2 + (heights[i-1] + heights[i])/3)
+        draw.polygon([(ax, ay+1), (bx, by+1), (cx, cy)], fill=LIGHT, outline=LIGHT)
+
 
 
 def draw_rocks_right(draw, x_cord, y_cord):
     (top_coords, bot_coords) = ([(x_cord,y_cord)], [])
+    heights = []
 
     (x, y) = (x_cord, y_cord)
     (x2, y2) = (x, y)
@@ -59,7 +71,9 @@ def draw_rocks_right(draw, x_cord, y_cord):
         w = random.randint(5, 10)
         h = random.randint(-5, 5)
         (x, y) = (x + w, y + h)
-        (x2, y2) = (x + random.randint(-2, 2), y + random.randint(3,10) + i)
+        h = random.randint(3,10)
+        heights.append(h)
+        (x2, y2) = (x + random.randint(-2, 2), y - h - i)
         bot_coords.append((x, y))
         top_coords.append((x2, y2))
         i += 1
@@ -67,5 +81,10 @@ def draw_rocks_right(draw, x_cord, y_cord):
     coords = top_coords + bot_coords
 
     draw.polygon(coords, fill=MIDDLE, outline=DARK)
-
+    bot_coords.reverse()
+    for i in range(1, len(top_coords) - 1):
+        (ax, ay) = top_coords[i]
+        (bx, by) = top_coords[i+1]
+        (cx, cy) = ( (ax + bx)/2, (ay + by)/2 + (heights[i-1] + heights[i])/3)
+        draw.polygon([(ax, ay+1), (bx, by+1), (cx, cy)], fill=LIGHT, outline=LIGHT)
 
