@@ -14,8 +14,8 @@ import reflection
 
 palette = PaletteWrapper()
 
-# base_seed = random.randint(0, sys.maxsize)
-base_seed = 5890079579401682303
+base_seed = random.randint(0, sys.maxsize)
+# base_seed = 5890079579401682303
 
 random.seed(base_seed)
 
