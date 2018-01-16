@@ -78,8 +78,12 @@ def _draw_spit(layer, y_min, y_max, seed_obj, from_left=None):
             rock_delta_height -= 1
         rock_height += rock_delta_height
 
-        if rock_height < 1 and y_max - y_min > 5:
-            rock_delta_height = random.randint(2, 3)
+        if rock_height < 1:
+            if y_max - y_min > 5:
+                rock_delta_height = random.randint(2, 3)
+            else:
+                 rock_height = 0
+
 
         if random.random() < 0.2:
             _place_tree(spit_buffer, x, y_min, width)
@@ -90,7 +94,12 @@ def _draw_spit(layer, y_min, y_max, seed_obj, from_left=None):
 
 def _place_tree(buf, x, y, width):
     tree_height = random.randint(4, 10)
+    has_leaves = random.random() < 0.8
 
     for i in range(tree_height):
         coord = (y - i) * width + x
         buf[coord] = colors.FG_DARK
+        if has_leaves and (i + x) % 2 == 0:
+            for leaf_x in range(min(-10 + i, 0), max(10 - i, 0) + 3):
+                buf[(y - i) * width + x + leaf_x // 3] = colors.FG_DARK
+
