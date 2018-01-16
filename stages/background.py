@@ -45,6 +45,8 @@ def background(layers, layer_factory, seed_obj):
         for y in range(horizon):
             bg += [COLORS[band[(i + y) % len(band)]] for i in range(len(band))]
 
+    _fill_stars(bg, width, horizon)
+
     img.putdata(bg)
 
     return layer
@@ -64,3 +66,32 @@ def _fill_bands(width, horizon, num_colors):
         bg += [COLORS[num_colors - 1]]
         count += 1
     return bg
+
+
+def _fill_stars(bg, width, horizon):
+
+    def random_index():
+        if random.choices([True, False]):
+            return random.randint(0, (width * horizon) - 1)
+        else:
+            return random.randint(0, ((width * horizon) / 2)-1)
+
+    # small stars
+    for _ in range(random.randint(10, 30)):
+        bg[random_index()] = colors.WHITE
+
+    # big stars
+    for _ in range(random.randint(5, 10)):
+        index = random_index()
+        bg[index] = colors.WHITE
+        if index - 1 >= 0:
+            bg[index - 1] = colors.WHITE
+
+        if index + 1 < width * horizon:
+            bg[index + 1] = colors.WHITE
+
+        if index - width >= 0:
+            bg[index - width] = colors.WHITE
+
+        if index + width < width * horizon:
+            bg[index + width] = colors.WHITE
