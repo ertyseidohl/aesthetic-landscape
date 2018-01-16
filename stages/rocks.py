@@ -19,6 +19,7 @@ def rocks(layers, layer_factory, seed_obj):
 
     y_mins = [random.randint(horizon - 10, height - 10) for i in range(3)]
     y_mins.sort()
+    y_mins.reverse()
     y_maxes = [y_min + random.randint(10, 30) for y_min in y_mins]
 
     layer1 = layer_factory('spit_1', reflection.REFLECT_BASE)
@@ -109,7 +110,7 @@ def _place_tree(buf, x, y, width):
         coord = (y - i) * width + x
         if(coord > 0 and coord < len(buf)):
             buf[coord] = colors.FG_DARK
-        if has_leaves and (i + x) % 2 == 0:
+        if has_leaves and (i + x) % 2 == 0 and i < tree_height - 1:
             for leaf_x in range(min(-10 + i, 0), max(10 - i, 0) + 3):
                 x_coord = x + leaf_x // 3
                 if x_coord >= 0 and x_coord < width:
