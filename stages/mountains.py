@@ -6,9 +6,46 @@ from PIL import ImageDraw
 import colors
 import reflection
 
+
+def mountains(layers, layer_factory, seed_obj):
+    random.seed(seed_obj['base_seed'])
+
+    horizon = seed_obj['horizon']
+    width = seed_obj['width']
+
+    layer = layer_factory('mountains', reflection.REFLECT_BASE)
+    img = layer.img
+
+    my_colors = [
+        colors.FG_LIGHT,
+        colors.FG_MID,
+        colors.FG_DARK,
+    ]
+
+    num_peaks = random.randint(4, 40)
+    mountain_ranges = [
+        MountainRange(
+            num_peaks=num_peaks,
+            horizon=horizon,
+            width=width,
+            fill=my_colors[i]
+        ) for i in range(random.choice([2, 3]))]
+    draw = ImageDraw.Draw(img)
+
+    for i, mountain_range in enumerate(mountain_ranges):
+        for mountain in mountain_range.mountains:
+            mountain.add_patch()
+            for _ in range(random.randint(0, 3)):
+                mountain.add_patch(random.random())
+            mountain.draw(draw)
+    del draw
+
+    return layer
+
+
 class MountainRange:
 
-    def __init__(self, num_peaks, horizon, width):
+    def __init__(self, num_peaks, horizon, width, fill):
         self.horizon = horizon
         self.num_peaks = num_peaks
         self.width = width
@@ -25,20 +62,21 @@ class MountainRange:
         peak_xy_list = [(random.randint(0, width), random.randint(top_height, bottom_height)) for _ in range(num_peaks)]
         peak_xy_list = sorted(peak_xy_list, key=lambda x: x[0])
 
-        self.mountains = [Mountain(peak, self.horizon) for peak in peak_xy_list]
+        self.mountains = [Mountain(peak, self.horizon, fill) for peak in peak_xy_list]
 
 
 class Mountain:
 
-    def __init__(self, peak, horizon):
+    def __init__(self, peak, horizon, fill):
         self.outline = []
         self.peak = peak
         self.horizon = horizon
         self.patches = []
+        self.fill = fill
         _walk(self)
 
-    def draw(self, draw, fill):
-        draw.polygon(self.outline, fill=fill)
+    def draw(self, draw):
+        draw.polygon(self.outline, fill=self.fill)
         for patch in self.patches:
             for pixel in patch:
                 draw.point(pixel, fill=colors.WHITE)
@@ -101,33 +139,6 @@ class Mountain:
                     patch.append((x,y))
 
         self.patches.append(patch)
-
-
-def mountains(layers, layer_factory, seed_obj):
-    random.seed(seed_obj['base_seed'])
-
-    horizon = seed_obj['horizon']
-    width = seed_obj['width']
-
-    layer = layer_factory('mountains', reflection.REFLECT_BASE)
-    img = layer.img
-
-    num_peaks = random.randint(4, 40)
-    mountain_ranges = [MountainRange(num_peaks=num_peaks, horizon=horizon, width=width)]
-    draw = ImageDraw.Draw(img)
-
-    for i, mountain_range in enumerate(mountain_ranges):
-        for mountain in mountain_range.mountains:
-            mountain.add_patch()
-            for _ in range(random.randint(0, 3)):
-                mountain.add_patch(random.random())
-
-            mountain.draw(draw, random.choice((
-                colors.FG_LIGHT,
-            )))
-    del draw
-
-    return layer
 
 
 SLOPES = [
