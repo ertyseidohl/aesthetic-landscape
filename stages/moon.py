@@ -18,9 +18,9 @@ def moon(layers, layer_factory, seed_obj):
 
 	layer = layer_factory('moon', reflection.REFLECT_HORIZON)
 
-	moon_x = int(random.triangular(0, width))
+	moon_x = int(random.triangular(0, width * 0.66 ))
 	moon_y = int(random.triangular(0, horizon))
-	moon_r = int(random.triangular(16, 32))
+	moon_r = int(random.triangular(8, 16))
 
 	draw = ImageDraw.Draw(layer.img)
 

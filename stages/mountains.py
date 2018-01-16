@@ -83,8 +83,6 @@ class Mountain:
                 start_y += 1
             start_pixel = (start_x, start_y)
 
-        print (start_pixel, self.peak)
-
         width = random.randint(4, 10)
         patch = []
 
