@@ -46,9 +46,11 @@ def _draw_spit(layer, y_min, y_max, seed_obj, from_left=None):
     rock_height = 3
     rock_delta_height = 0
     while y_max > y_min and x >= 0 and x < width:
-        for y in range(y_min, y_max):
+        for y in range(y_min - rock_height, y_max):
             coord = y * width + x
-            if y == y_min or y == y_max - rock_height or y == y_max - 1:
+            if y == y_min and y < y_max - rock_height:
+                spit_buffer[coord] = colors.FG_DARK
+            elif y == y_max - rock_height or y == y_max - 1:
                 spit_buffer[coord] = colors.FG_DARK
             elif y > y_max - rock_height:
                 from_top = y - (y_max - rock_height)
@@ -58,8 +60,8 @@ def _draw_spit(layer, y_min, y_max, seed_obj, from_left=None):
                     spit_buffer[coord] = colors.FG_LIGHT
                 else:
                     spit_buffer[coord] = colors.FG_MID
-            else:
-                if (x + y) % 2 == 0:
+            elif y > y_min:
+                if (x + y) % 2 == 0 or random.random() < 0.2:
                     spit_buffer[coord] = colors.FG_DARK
                 else:
                     spit_buffer[coord] = colors.FG_MID
@@ -76,10 +78,8 @@ def _draw_spit(layer, y_min, y_max, seed_obj, from_left=None):
             rock_delta_height -= 1
         rock_height += rock_delta_height
 
-        if rock_height <= 0:
-            rock_delta_height = random.randint(1, 4)
-        if rock_height > y_max - y_min:
-            rock_height = y_max - y_min
+        if rock_height < 1 and y_max - y_min > 5:
+            rock_delta_height = random.randint(3, 4)
 
         x += 1 if from_left else -1
 

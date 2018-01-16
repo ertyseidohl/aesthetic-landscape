@@ -41,7 +41,7 @@ class Mountain:
         draw.polygon(self.outline, fill=fill)
         for patch in self.patches:
             for pixel in patch:
-                draw.point(pixel, fill=fill-1)
+                draw.point(pixel, fill=colors.WHITE)
 
     def outline_tail(self):
         return self.outline[len(self.outline) -1]
@@ -112,7 +112,7 @@ def mountains(layers, layer_factory, seed_obj):
     layer = layer_factory('mountains', reflection.REFLECT_BASE)
     img = layer.img
 
-    num_peaks = random.randint(4, 7)
+    num_peaks = random.randint(4, 40)
     mountain_ranges = [MountainRange(num_peaks=num_peaks, horizon=horizon, width=width)]
     draw = ImageDraw.Draw(img)
 
