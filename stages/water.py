@@ -39,7 +39,7 @@ def water(layers, layer_factory, seed_obj):
 
     rocks1_reflector = Reflector(
         _get_layer_by_name('spit_1', layers),
-        layer_factory('rocks_refl', reflection.IS_REFLECTION),
+        layer_factory('rocks_refl_1', reflection.IS_REFLECTION),
         seed_obj,
         mask,
         WATER_REFL_COLOR
@@ -49,7 +49,7 @@ def water(layers, layer_factory, seed_obj):
 
     rocks2_reflector = Reflector(
         _get_layer_by_name('spit_2', layers),
-        layer_factory('rocks_refl', reflection.IS_REFLECTION),
+        layer_factory('rocks_refl_2', reflection.IS_REFLECTION),
         seed_obj,
         mask,
         WATER_REFL_COLOR
@@ -57,9 +57,19 @@ def water(layers, layer_factory, seed_obj):
     rocks2_reflector.reflect_base()
     layers.append(rocks2_reflector.get_result_layer())
 
-    # water_lights_layer = layer_factory('water_lights', reflection.NONE)
-    # _generate_water_lights(water_lights_layer, mask, seed_obj)
-    # layers.append(water_lights_layer)
+    rocks3_reflector = Reflector(
+        _get_layer_by_name('spit_3', layers),
+        layer_factory('rocks_refl_3', reflection.IS_REFLECTION),
+        seed_obj,
+        mask,
+        WATER_REFL_COLOR
+    )
+    rocks3_reflector.reflect_base()
+    layers.append(rocks3_reflector.get_result_layer())
+
+    water_lights_layer = layer_factory('water_lights', reflection.NONE)
+    _generate_water_lights(water_lights_layer, mask, seed_obj)
+    layers.append(water_lights_layer)
 
     return layers
 

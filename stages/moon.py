@@ -20,7 +20,7 @@ def moon(layers, layer_factory, seed_obj):
 
 	moon_r = int(random.triangular(8, 32))
 	moon_x = int(random.triangular(0, width * 0.66 ))
-	moon_y = int(random.triangular(moon_r, horizon))
+	moon_y = int(random.triangular(0, horizon / 2))
 
 	draw = ImageDraw.Draw(layer.img)
 

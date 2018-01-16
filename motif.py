@@ -15,13 +15,13 @@ import reflection
 palette = PaletteWrapper()
 
 base_seed = random.randint(0, sys.maxsize)
-# base_seed = 512
+# base_seed = 2583388396358350581
 
 random.seed(base_seed)
 
 seed_object = {
     'base_seed': base_seed,
-    'horizon': int(random.triangular(IMAGE_SIZE[0] * 0.25, IMAGE_SIZE[0] * 0.75)),
+    'horizon': int(random.triangular(IMAGE_SIZE[0] * 0.4, IMAGE_SIZE[0] * 0.8)),
     'height': IMAGE_SIZE[0],
     'width': IMAGE_SIZE[1],
 }
@@ -60,3 +60,5 @@ image = image.resize((IMAGE_SIZE[0] * 4, IMAGE_SIZE[1] * 4), resample=Image.NEAR
 
 image.show()
 image.save(f'img/motif_{int(time.time())}.png', 'PNG')
+
+print(f'Seed: {base_seed}')

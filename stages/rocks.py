@@ -17,17 +17,21 @@ def rocks(layers, layer_factory, seed_obj):
 
     spits_layers = []
 
-    y_min = random.randint(horizon - 10, horizon + 10)
-    y_max = y_min + random.randint(10, 30)
+    y_mins = [random.randint(horizon - 10, height - 10) for i in range(3)]
+    y_mins.sort()
+    y_maxes = [y_min + random.randint(10, 30) for y_min in y_mins]
+
     layer1 = layer_factory('spit_1', reflection.REFLECT_BASE)
-    _draw_spit(layer1, y_min, y_max, seed_obj)
+    _draw_spit(layer1, y_mins[0], y_maxes[0], seed_obj)
     spits_layers.append(layer1)
 
-    y_min = random.randint(horizon - 10, height - 10)
-    y_max = y_min + random.randint(10, 30)
     layer2 = layer_factory('spit_2', reflection.REFLECT_BASE)
-    _draw_spit(layer2, y_min, y_max, seed_obj)
+    _draw_spit(layer2, y_mins[1], y_maxes[1], seed_obj)
     spits_layers.append(layer2)
+
+    layer3 = layer_factory('spit_3', reflection.REFLECT_BASE)
+    _draw_spit(layer3, y_mins[2], y_maxes[2], seed_obj)
+    spits_layers.append(layer3)
 
     return spits_layers
 
@@ -49,9 +53,13 @@ def _draw_spit(layer, y_min, y_max, seed_obj, from_left=None, has_trees=None):
     while y_max > y_min and x >= 0 and x < width:
         for y in range(y_min - rock_height, y_max):
             coord = y * width + x
-            if y == y_min and y < y_max - rock_height:
+            if y == y_max - 1 or (y_max - y_min < 2):
+                spit_buffer[coord] = colors.WHITE
+            elif y == y_min and y < y_max - rock_height:
                 spit_buffer[coord] = colors.FG_DARK
-            elif y == y_max - rock_height or y == y_max - 1:
+            elif y == y_max - 2:
+                spit_buffer[coord] = colors.FG_DARK
+            elif y == y_max - rock_height:
                 spit_buffer[coord] = colors.FG_DARK
             elif y > y_max - rock_height:
                 from_top = y - (y_max - rock_height)
@@ -86,7 +94,7 @@ def _draw_spit(layer, y_min, y_max, seed_obj, from_left=None, has_trees=None):
                  rock_height = 0
 
 
-        if has_trees and random.random() < 0.2:
+        if has_trees and random.random() < 0.15:
             _place_tree(spit_buffer, x, y_min, width)
 
         x += 1 if from_left else -1
@@ -99,10 +107,10 @@ def _place_tree(buf, x, y, width):
 
     for i in range(tree_height):
         coord = (y - i) * width + x
-        buf[coord] = colors.FG_DARK
+        if(coord > 0 and coord < len(buf)):
+            buf[coord] = colors.FG_DARK
         if has_leaves and (i + x) % 2 == 0:
             for leaf_x in range(min(-10 + i, 0), max(10 - i, 0) + 3):
                 x_coord = x + leaf_x // 3
-                if x_coord > 0:
+                if x_coord >= 0 and x_coord < width:
                     buf[(y - i) * width + x_coord] = colors.FG_DARK
-
