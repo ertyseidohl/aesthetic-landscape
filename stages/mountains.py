@@ -71,19 +71,25 @@ class Mountain:
         else:
             start_y = self.peak[1]
             start_y = start_y + (self.horizon - start_y) * random.triangular() * weight
+            start_y = math.ceil(start_y)
 
             start_x = self.peak[0]
             while self.pixel_in_boundaries(start_x, start_y, exclusive=True):
                 start_x = start_x - 1
 
+            if start_x % 2 != self.peak[0] % 2:
+                start_x += 1
+            if start_y % 2 != self.peak[1] % 2:
+                start_y += 1
             start_pixel = (start_x, start_y)
 
-        width = random.randint(4, 8)
-        max_length = math.ceil((self.horizon - self.peak[1]) / 2)
+        print (start_pixel, self.peak)
+
+        width = random.randint(4, 10)
         patch = []
 
         top_offset = 0
-        bottom_offset = random.randint(6 + math.ceil(10 * weight), 10 + math.ceil(10 * weight))
+        bottom_offset = random.randint(6 + math.ceil(12 * weight), 10 + math.ceil(12 * weight))
         for i in range(width):
 
             top_offset = top_offset + random.choice([2, 1, 1, 0, -1, -1, -2])
