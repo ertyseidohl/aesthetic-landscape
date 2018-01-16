@@ -18,14 +18,13 @@ def moon(layers, layer_factory, seed_obj):
 
 	layer = layer_factory('moon', reflection.REFLECT_HORIZON)
 
-	moon_r = int(random.triangular(8, 16))
+	moon_r = int(random.triangular(8, 32))
 	moon_x = int(random.triangular(0, width * 0.66 ))
 	moon_y = int(random.triangular(moon_r, horizon))
 
 	draw = ImageDraw.Draw(layer.img)
 
 	phase = random.choice((
-		_draw_new_moon,
 		_draw_crescent_moon,
 		_draw_gibbous_moon,
 		_draw_crescent_moon,
