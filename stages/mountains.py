@@ -83,8 +83,6 @@ class Mountain:
                 start_y += 1
             start_pixel = (start_x, start_y)
 
-        print (start_pixel, self.peak)
-
         width = random.randint(4, 10)
         patch = []
 
@@ -165,22 +163,29 @@ def _slope_stability(slope_index, slope_stability, slope_gravity):
 
     return slope_index, slope_stability
 
+
 def _walk(mountain):
 
     mountain.outline = [mountain.peak]
 
     walk_xy = mountain.peak
     slope_index, slope_stability, slope_gravity = _slope_start()
-    while walk_xy[1] <= mountain.horizon:
+    while walk_xy[1] < mountain.horizon:
         slope_index, slope_stability = _slope_stability(slope_index, slope_stability, slope_gravity)
-        walk_xy = (walk_xy[0] - SLOPES[slope_index][0], walk_xy[1] + SLOPES[slope_index][1])
+        walk_x = walk_xy[0] - SLOPES[slope_index][0]
+        walk_y = walk_xy[1] + SLOPES[slope_index][1]
+        walk_y = min(walk_y, mountain.horizon)
+        walk_xy = (walk_x, walk_y)
         mountain.outline.append(walk_xy)
 
     walk_xy = mountain.peak
     slope_index, slope_stability, slope_gravity = _slope_start()
-    while walk_xy[1] <= mountain.horizon:
+    while walk_xy[1] < mountain.horizon:
         slope_index, slope_stability = _slope_stability(slope_index, slope_stability, slope_gravity)
-        walk_xy = (walk_xy[0] + SLOPES[slope_index][0], walk_xy[1] + SLOPES[slope_index][1])
+        walk_x = walk_xy[0] + SLOPES[slope_index][0]
+        walk_y = walk_xy[1] + SLOPES[slope_index][1]
+        walk_y = min(walk_y, mountain.horizon)
+        walk_xy = (walk_x, walk_y)
         mountain.outline.append(walk_xy)
 
     mountain.outline = sorted(mountain.outline, key=lambda x: x[0])
