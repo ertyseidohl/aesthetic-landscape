@@ -15,25 +15,19 @@ def rocks(layers, layer_factory, seed_obj):
     horizon = seed_obj['horizon']
     height = seed_obj['height']
 
-    spits_layers = []
+    num_spits = random.randint(2, 5)
 
-    y_mins = [random.randint(horizon - 10, height - 10) for i in range(3)]
+    y_mins = [random.randint(horizon - 10, height - 10) for i in range(num_spits)]
     y_mins.sort()
+    y_mins.reverse()
     y_maxes = [y_min + random.randint(10, 30) for y_min in y_mins]
 
-    layer1 = layer_factory('spit_1', reflection.REFLECT_BASE)
-    _draw_spit(layer1, y_mins[0], y_maxes[0], seed_obj)
-    spits_layers.append(layer1)
+    rocks_layer = layer_factory('rocks', reflection.REFLECT_BASE)
 
-    layer2 = layer_factory('spit_2', reflection.REFLECT_BASE)
-    _draw_spit(layer2, y_mins[1], y_maxes[1], seed_obj)
-    spits_layers.append(layer2)
+    for i in range(num_spits):
+        _draw_spit(rocks_layer, y_mins[i], y_maxes[i], seed_obj)
 
-    layer3 = layer_factory('spit_3', reflection.REFLECT_BASE)
-    _draw_spit(layer3, y_mins[2], y_maxes[2], seed_obj)
-    spits_layers.append(layer3)
-
-    return spits_layers
+    return rocks_layer
 
 def _draw_spit(layer, y_min, y_max, seed_obj, from_left=None, has_trees=None):
     height = seed_obj['height']
@@ -42,7 +36,7 @@ def _draw_spit(layer, y_min, y_max, seed_obj, from_left=None, has_trees=None):
 
     y_max = min(y_max, height)
 
-    spit_buffer = [colors.TRANSPARENT for i in range(width * height)]
+    spit_buffer = list(layer.img.getdata())
 
     has_trees = random.random() < 0.5 if has_trees == None else has_trees
     from_left = random.random() < 0.5 if from_left == None else from_left
@@ -53,7 +47,11 @@ def _draw_spit(layer, y_min, y_max, seed_obj, from_left=None, has_trees=None):
     while y_max > y_min and x >= 0 and x < width:
         for y in range(y_min - rock_height, y_max):
             coord = y * width + x
-            if y == y_max - 1 or (y_max - y_min < 2):
+
+            if spit_buffer[coord] != colors.TRANSPARENT:
+                continue
+
+            elif y == y_max - 1 or (y_max - (y_min - rock_height) < 2):
                 spit_buffer[coord] = colors.WHITE
             elif y == y_min and y < y_max - rock_height:
                 spit_buffer[coord] = colors.FG_DARK
@@ -92,7 +90,6 @@ def _draw_spit(layer, y_min, y_max, seed_obj, from_left=None, has_trees=None):
                 rock_delta_height = random.randint(2, 3)
             else:
                  rock_height = 0
-
 
         if has_trees and random.random() < 0.15:
             _place_tree(spit_buffer, x, y_min, width)
