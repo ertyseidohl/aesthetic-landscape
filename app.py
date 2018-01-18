@@ -11,9 +11,6 @@ def homepage():
     seed = request.args.get('seed')
     seed, image = motif(seed=seed, is_webapp=True)
 
-    with open('./f', 'w') as f:
-        f.write(str(image))
-
     return """
         <html>
         <head>

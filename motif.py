@@ -13,6 +13,7 @@ import stages
 import reflection
 
 def motif(seed=None, is_webapp=False):
+    seed=3653222218532477031
     seed = str(seed) if seed else str(random.randint(0, sys.maxsize))
     random.seed(seed)
     palette = PaletteWrapper()

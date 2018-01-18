@@ -19,7 +19,6 @@ def rocks(layers, layer_factory, seed_obj):
 
     y_mins = [random.randint(horizon - 10, height - 10) for i in range(3)]
     y_mins.sort()
-    y_mins.reverse()
     y_maxes = [y_min + random.randint(10, 30) for y_min in y_mins]
 
     layer1 = layer_factory('spit_1', reflection.REFLECT_BASE)
