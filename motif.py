@@ -1,6 +1,6 @@
-from PIL import Image, ImagePalette
-import time
+import base64
 import colors
+from io import BytesIO
 import random
 import sys
 import time
@@ -12,53 +12,56 @@ from palettewrapper import PaletteWrapper
 import stages
 import reflection
 
-palette = PaletteWrapper()
+def motif(seed=None, is_webapp=False):
+    seed = str(seed) if seed else str(random.randint(0, sys.maxsize))
+    random.seed(seed)
+    palette = PaletteWrapper()
 
-base_seed = random.randint(0, sys.maxsize)
-# base_seed = 5890079579401682303
+    seed_object = {
+        'base_seed': seed,
+        'horizon': int(random.triangular(IMAGE_SIZE[0] * 0.4, IMAGE_SIZE[0] * 0.8)),
+        'height': IMAGE_SIZE[0],
+        'width': IMAGE_SIZE[1],
+    }
 
-random.seed(base_seed)
+    funcs = [
+        stages.background,
+        stages.moon,
+        stages.mountains,
+        stages.rocks,
+        stages.water
+    ]
 
-seed_object = {
-    'base_seed': base_seed,
-    'horizon': int(random.triangular(IMAGE_SIZE[0] * 0.4, IMAGE_SIZE[0] * 0.8)),
-    'height': IMAGE_SIZE[0],
-    'width': IMAGE_SIZE[1],
-}
+    layers = []
+    for func in funcs:
+        new_layers = func(layers, layer_factory, seed_object)
+        if type(new_layers) == list:
+            layers = layers + new_layers
+        else:
+            layers.append(new_layers)
 
-funcs = []
+    image = layer_factory('base', reflection.NONE).img
+    for layer in layers:
+        layer_img_data = list(layer.img.getdata())
+        image_data = image.getdata()
 
-def register_function(func):
-    funcs.append(func)
+        image_data = [image_data[i] if layer_img_data[i] == colors.TRANSPARENT else layer_img_data[i] for i in range(len(image_data))]
+        image.putdata(image_data)
 
-register_function(stages.background)
-register_function(stages.moon)
-register_function(stages.mountains)
-register_function(stages.rocks)
-register_function(stages.water)
+    palette.set_colors(colors.generate_palette(seed_object))
+    image.putpalette(ImagePalette.ImagePalette('RGB', palette.serialize()))
 
-layers = []
-for func in funcs:
-    new_layers = func(layers, layer_factory, seed_object)
-    if type(new_layers) == list:
-        layers = layers + new_layers
+    image = image.resize((IMAGE_SIZE[0] * 4, IMAGE_SIZE[1] * 4), resample=Image.NEAREST)
+
+    if is_webapp:
+        buffer = BytesIO()
+        image.save(buffer, format='PNG')
+        return (seed, base64.b64encode(buffer.getvalue()))
     else:
-        layers.append(new_layers)
+        image.show()
+        image.save(f'img/motif_{int(time.time())}.png', 'PNG')
 
-image = layer_factory('base', reflection.NONE).img
-for layer in layers:
-    layer_img_data = list(layer.img.getdata())
-    image_data = image.getdata()
+    print(f'Seed: {seed}')
 
-    image_data = [image_data[i] if layer_img_data[i] == colors.TRANSPARENT else layer_img_data[i] for i in range(len(image_data))]
-    image.putdata(image_data)
-
-palette.set_colors(colors.generate_palette(seed_object))
-image.putpalette(ImagePalette.ImagePalette('RGB', palette.serialize()))
-
-image = image.resize((IMAGE_SIZE[0] * 4, IMAGE_SIZE[1] * 4), resample=Image.NEAREST)
-
-image.show()
-image.save(f'img/motif_{int(time.time())}.png', 'PNG')
-
-print(f'Seed: {base_seed}')
+if __name__ == '__main__':
+    motif()

@@ -9,11 +9,10 @@ COLORS = range(colors.BG_DARKEST, colors.BG_LIGHTEST)
 
 
 def background(layers, layer_factory, seed_obj):
+    random.seed(seed_obj['base_seed'])
 
     layer = layer_factory('background', reflection.MASK)
     img = layer.img
-
-    random.seed(seed_obj['base_seed'])
 
     num_colors = len(COLORS)
     # pattern = random.choice(PATTERNS)

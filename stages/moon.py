@@ -6,7 +6,7 @@ import colors
 import reflection
 
 COLOR_LIGHT = colors.WHITE
-COLOR_SHADOW = colors.BG_LIGHTEST
+COLOR_SHADOW = colors.BG_DARKER
 
 SQUASH_AMOUNT = 2
 

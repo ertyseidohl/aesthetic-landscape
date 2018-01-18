@@ -9,6 +9,7 @@ WATER_REFL_COLOR = colors.BG_LIGHTER
 MOON_REFL_COLOR = colors.WHITE
 
 def water(layers, layer_factory, seed_obj):
+    random.seed(seed_obj['base_seed'])
 
     mask = _get_water_mask(layers, seed_obj['width'], seed_obj['height'])
 
@@ -24,7 +25,7 @@ def water(layers, layer_factory, seed_obj):
         mask,
         MOON_REFL_COLOR
     )
-    moon_reflector.reflect_horizon(exclude_colors=[colors.BG_LIGHTEST])
+    moon_reflector.reflect_horizon(exclude_colors=[colors.BG_DARKER])
     layers.append(moon_reflector.get_result_layer())
 
     mountain_reflector = Reflector(
